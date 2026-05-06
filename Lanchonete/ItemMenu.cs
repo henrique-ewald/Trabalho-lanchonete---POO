@@ -11,35 +11,7 @@ public class ItemMenu
     public decimal Preco {get;set;}
     public bool EstaDisponivel {get;set;}
 
-    public ItemMenu[] AdicionaItem(ItemMenu novo, ItemMenu[] Cardapio)
-    {
-        ItemMenu[] NovoCardapio = new ItemMenu[Cardapio.Length + 1];
 
-        int cont;
-        
-        for(cont = 0; cont < Cardapio.Length; cont++)
-        {
-            NovoCardapio[cont] = Cardapio[cont];
-        }
-        NovoCardapio[NovoCardapio.Length - 1] = novo;
-
-        return NovoCardapio;
-    }
-
-    public ItemMenu[] RemoveItem(ItemMenu removido, ItemMenu[] Cardapio)
-    {
-        ItemMenu[] NovoVetor = new ItemMenu[Cardapio.Length - 1];
-
-        int cont;
-        for (cont=0; cont < Cardapio.Length; cont++)
-        {
-            if(removido.Codigo != Cardapio[cont].Codigo)
-            {
-                NovoVetor[cont] = Cardapio[cont];
-            }
-        }
-        return NovoVetor;
-    }
 
 
     // não deve ficar nessa classe!

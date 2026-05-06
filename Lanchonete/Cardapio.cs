@@ -2,23 +2,9 @@ using System;
 
 namespace Lanchonete;
 
-public class Usuario
+public class Cardapio
 {
-    public int id {get;set;}
-    public string Nome {get;set;}
-    public string Email {get;set;}
-    public string Acesso {get;set;}
-    public bool EhFuncionario()
-    {
-        if (false)
-        {
-            
-        }
-        else
-        {
-            return false;
-        }
-    }
+    public ItemMenu[] CardapioItens {get;set;}
 
     public ItemMenu[] AdicionaItem(ItemMenu novo, ItemMenu[] Cardapio)
     {
@@ -36,7 +22,12 @@ public class Usuario
         return NovoCardapio;
     }
 
-    public ItemMenu[] RemoveItem(ItemMenu removido, ItemMenu[] Cardapio)
+    public void EditarItem(ItemMenu item)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ItemMenu[] RemoverItem(ItemMenu removido, ItemMenu[] Cardapio)
     {
         ItemMenu[] NovoVetor = new ItemMenu[Cardapio.Length - 1];
 
@@ -48,7 +39,7 @@ public class Usuario
                 NovoVetor[cont] = Cardapio[cont];
             }
         }
-        Console.WriteLine($"Item de código {id} removido.");
+        Console.WriteLine($"Item de código {removido.Codigo} removido.");
         return NovoVetor;
     }
 

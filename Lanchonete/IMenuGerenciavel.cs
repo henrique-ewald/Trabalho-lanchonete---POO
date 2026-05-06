@@ -4,7 +4,7 @@ namespace Lanchonete;
 
 public interface IMenuGerenciavel
 {
-    void AdicionaItem(ItemMenu item);
-    void EditarItem(ItemMenu item);
-    void RemoverItem(int id);
+    public void AdicionaItem(ItemMenu item);
+    public void EditarItem(ItemMenu item);
+    public void RemoverItem(ItemMenu removido);
 }

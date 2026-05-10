@@ -6,20 +6,21 @@ public class Cardapio
 {
     public ItemMenu[] CardapioItens {get;set;}
 
-    public ItemMenu[] AdicionaItem(ItemMenu novo, ItemMenu[] Cardapio)
+    public void AdicionaItem(ItemMenu novo)
     {
-        ItemMenu[] NovoCardapio = new ItemMenu[Cardapio.Length + 1];
+        ItemMenu[] NovoCardapio = new ItemMenu[CardapioItens.Length + 1];
 
         int cont;
         
-        for(cont = 0; cont < Cardapio.Length; cont++)
+        for(cont = 0; cont < CardapioItens.Length; cont++)
         {
-            NovoCardapio[cont] = Cardapio[cont];
+            NovoCardapio[cont] = CardapioItens[cont];
         }
         NovoCardapio[NovoCardapio.Length - 1] = novo;
 
         Console.WriteLine($"Item '{novo.DescricaoBR}' adicionado ao menu.");
-        return NovoCardapio;
+
+        CardapioItens = NovoCardapio;
     }
 
     public void EditarItem(ItemMenu item)
@@ -27,20 +28,20 @@ public class Cardapio
         throw new NotImplementedException();
     }
 
-    public ItemMenu[] RemoverItem(ItemMenu removido, ItemMenu[] Cardapio)
+    public void RemoverItem(ItemMenu removido)
     {
-        ItemMenu[] NovoVetor = new ItemMenu[Cardapio.Length - 1];
+        ItemMenu[] NovoVetor = new ItemMenu[CardapioItens.Length - 1];
 
         int cont;
-        for (cont=0; cont < Cardapio.Length; cont++)
+        for (cont=0; cont < CardapioItens.Length; cont++)
         {
-            if(removido.Codigo != Cardapio[cont].Codigo)
+            if(removido.Codigo != CardapioItens[cont].Codigo)
             {
-                NovoVetor[cont] = Cardapio[cont];
+                NovoVetor[cont] = CardapioItens[cont];
             }
         }
         Console.WriteLine($"Item de código {removido.Codigo} removido.");
-        return NovoVetor;
+        CardapioItens = NovoVetor;
     }
 
 }

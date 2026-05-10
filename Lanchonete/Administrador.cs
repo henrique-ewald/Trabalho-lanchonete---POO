@@ -11,11 +11,11 @@ public class Administrador : Usuario, IMenuGerenciavel
     }
     public void AdicionaItem(ItemMenu novo)
     {
-        cardapio1.AdicionaItem(novo, cardapio1.CardapioItens);
+        cardapio1.AdicionaItem(novo);
     }
     public void RemoverItem(ItemMenu removido)
     {
-        cardapio1.RemoverItem(removido, cardapio1.CardapioItens);
+        cardapio1.RemoverItem(removido);
     }
 
     public void EditarItem(ItemMenu item)

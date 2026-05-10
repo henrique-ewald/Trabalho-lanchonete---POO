@@ -5,23 +5,23 @@ namespace Lanchonete;
 
 public class Funcionario : Usuario, IMenuGerenciavel
 {
-    public string Senha {get;set;}
+    private string Senha {get;set;}
     public string Cargo {get;set;}
 
     private Cardapio cardapio1 {get;set;}
     public Funcionario(Cardapio cardapio)
     {
-        this.cardapio1 = cardapio;
+        cardapio1 = cardapio;
         Senha = "12345";
         Cargo = "anonimo";
     }
     public void AdicionaItem(ItemMenu novo)
     {
-        cardapio1.AdicionaItem(novo, cardapio1.CardapioItens);
+        cardapio1.AdicionaItem(novo);
     }
     public void RemoverItem(ItemMenu removido)
     {
-        cardapio1.RemoverItem(removido, cardapio1.CardapioItens);
+        cardapio1.RemoverItem(removido);
     }
 
     public void EditarItem(ItemMenu item)
@@ -34,6 +34,16 @@ public class Funcionario : Usuario, IMenuGerenciavel
         return tentativa == Senha;
     }
 
+    public void AlteraSenha()
+    {
+        Console.WriteLine("Digite a sua nova senha:\n");
+        string SenhaNova = Console.ReadLine();
+        if (SenhaNova == Senha){Console.WriteLine("Digite uma senha diferente da atual.\n");}
+        else
+        {
+            Senha = SenhaNova;
+        }
+    }
 
 
 }

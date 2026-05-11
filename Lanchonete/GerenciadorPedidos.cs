@@ -6,7 +6,7 @@ public class GerenciadorPedidos
 {
     public Pedido[] TodosPedidos {get;set;}
 
-    public Pedido CriarPedido(Cliente consumidor, Cardapio cardapio, int[] codigosItens, int[] quantItens, int PessoasPDividir)
+    public Pedido CriarPedido(Cliente? consumidor, Cardapio cardapio, int[] codigosItens, int[] quantItens, int PessoasPDividir)
     {
         Pedido pedido = new Pedido
         {
@@ -109,13 +109,17 @@ public class GerenciadorPedidos
             pedido.StatusAtual = Status.Encerrado;
             Console.WriteLine($"O pedido {pedido.id} foi encerrado!\n");
         }
+        else if (pedido.StatusAtual == Status.Encerrado)
+        {
+            Console.WriteLine("O pedido já esta encerrado, não é possivel alterar o status do pedido.\n");
+        }
         return pedido;
     }
     private Pedido PagarPedido(Pedido pedido)
     {
         Console.WriteLine($"O valor total do pedido eh:{pedido.ValorTotal}\n");
         if(pedido.PessoasParaDividir > 1)
-            Console.WriteLine($"O valor dividido entre {pedido.PessoasParaDividir} pessoas ficou:{pedido.ValorTotal} para cada\n");
+            Console.WriteLine($"O valor dividido entre {pedido.PessoasParaDividir} pessoas ficou:{pedido.ValorTotal / pedido.PessoasParaDividir} para cada\n");
         pedido.StatusAtual = Status.Pago;
         return pedido;
     }

@@ -11,22 +11,26 @@ public class Funcionario : Usuario, IMenuGerenciavel
     private Cardapio cardapio1 {get;set;}
     public Funcionario(Cardapio cardapio)
     {
+        id = GeraId();
         cardapio1 = cardapio;
         Senha = "12345";
         Cargo = "anonimo";
+        AcessoDoUsuario = Acesso.Funcionario;
     }
     public void AdicionaItem(ItemMenu novo)
     {
         cardapio1.AdicionaItem(novo);
+        Console.WriteLine("Item adicionado com sucesso!\n");
     }
     public void RemoverItem(ItemMenu removido)
     {
         cardapio1.RemoverItem(removido);
+        Console.WriteLine("Item removido com sucesso!\n");
     }
 
     public void EditarItem(ItemMenu item)
     {
-        Console.WriteLine($"Item '{item.DescricaoBR}' editado.");
+        Console.WriteLine($"Item '{item.DescricaoBR}' editado\n");
     }
 
     public bool ValidarSenha(string tentativa)

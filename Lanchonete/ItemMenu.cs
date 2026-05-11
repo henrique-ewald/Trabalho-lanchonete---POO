@@ -11,14 +11,6 @@ public class ItemMenu
     public decimal Preco {get;set;}
     public bool EstaDisponivel {get;set;}
 
-
-
-
-    // não deve ficar nessa classe!
-    // public Categoria Entradas {get;set;}
-    // public Categoria Bebidas {get;set;}
-    // public Categoria Pratos {get;set;}
-    // public Categoria Sobremesas {get;set;}
     
     
 }

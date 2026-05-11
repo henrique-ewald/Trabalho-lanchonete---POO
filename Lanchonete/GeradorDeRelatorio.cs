@@ -2,7 +2,7 @@ using System;
 
 namespace Lanchonete;
 
-public class UsuarioInput
+public class GeradorDeRelatorio
 {
-    
+
 }

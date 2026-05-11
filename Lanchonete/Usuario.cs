@@ -2,22 +2,29 @@ using System;
 
 namespace Lanchonete;
 
+public enum Acesso {Cliente, Funcionario, Administrador}
 public class Usuario
 {
-    public int id {get;set;}
+    public string id {get;set;}
     public string Nome {get;set;}
     public string Email {get;set;}
-    public string Acesso {get;set;}
+    public Acesso AcessoDoUsuario {get;set;}
+
     public bool EhFuncionario()
     {
-        if (false)
+        if (AcessoDoUsuario == Acesso.Funcionario || AcessoDoUsuario == Acesso.Administrador)
         {
-            
+            return true;
         }
         else
         {
             return false;
         }
+    }
+
+    public string GeraId()
+    {
+        return $"{Guid.NewGuid()}";
     }
 
 

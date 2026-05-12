@@ -6,36 +6,71 @@ public class MockDeDados
 {
     public Cardapio CriarCardapioPadrao()
     {
+        Categoria entradas = new Categoria
+        {
+            Id = 1,
+            NomeBR = "Entradas",
+            NomeEN = "Starters"
+        };
+
+        Categoria bebidas = new Categoria
+        {
+            Id = 2,
+            NomeBR = "Bebidas",
+            NomeEN = "Drinks"
+        };
+
+        Categoria pratosPrincipais = new Categoria
+        {
+            Id = 3,
+            NomeBR = "Pratos Principais",
+            NomeEN = "Main Dishes"
+        };
+
+        Categoria sobremesas = new Categoria
+        {
+            Id = 4,
+            NomeBR = "Sobremesas",
+            NomeEN = "Desserts"
+        };
+
         Cardapio cardapio = new Cardapio
         {
-            CardapioItens = new ItemMenu[0]
+            CardapioItens = [],
+            Entradas = entradas,
+            Bebidas = bebidas,
+            Pratos = pratosPrincipais,
+            Sobremesas = sobremesas
         };
 
         cardapio.AdicionaItem(new ItemMenu
         {
             Codigo = 1,
-            DescricaoBR = "X-Burguer",
-            DescricaoEN = "Burger",
-            Preco = 22.90m,
-            EstaDisponivel = true
+            DescricaoBR = "Coxinha",
+            DescricaoEN = "Chicken Croquette",
+            Preco = 8.50m,
+            EstaDisponivel = true,
+            Categoria = entradas
         });
 
         cardapio.AdicionaItem(new ItemMenu
         {
             Codigo = 2,
-            DescricaoBR = "X-Salada",
-            DescricaoEN = "Salad Burger",
-            Preco = 24.90m,
-            EstaDisponivel = true
+            DescricaoBR = "Pao de Alho",
+            DescricaoEN = "Garlic Bread",
+            Preco = 7.90m,
+            EstaDisponivel = true,
+            Categoria = entradas
         });
 
         cardapio.AdicionaItem(new ItemMenu
         {
             Codigo = 3,
-            DescricaoBR = "Batata Frita",
-            DescricaoEN = "French Fries",
-            Preco = 12.00m,
-            EstaDisponivel = true
+            DescricaoBR = "Mini Pastel",
+            DescricaoEN = "Mini Pastry",
+            Preco = 9.90m,
+            EstaDisponivel = true,
+            Categoria = entradas
         });
 
         cardapio.AdicionaItem(new ItemMenu
@@ -44,7 +79,8 @@ public class MockDeDados
             DescricaoBR = "Refrigerante",
             DescricaoEN = "Soda",
             Preco = 8.50m,
-            EstaDisponivel = true
+            EstaDisponivel = true,
+            Categoria = bebidas
         });
 
         cardapio.AdicionaItem(new ItemMenu
@@ -53,7 +89,8 @@ public class MockDeDados
             DescricaoBR = "Suco Natural",
             DescricaoEN = "Natural Juice",
             Preco = 9.90m,
-            EstaDisponivel = true
+            EstaDisponivel = true,
+            Categoria = bebidas
         });
 
         cardapio.AdicionaItem(new ItemMenu
@@ -62,7 +99,68 @@ public class MockDeDados
             DescricaoBR = "Milkshake de Chocolate",
             DescricaoEN = "Chocolate Milkshake",
             Preco = 16.90m,
-            EstaDisponivel = true
+            EstaDisponivel = true,
+            Categoria = bebidas
+        });
+
+        cardapio.AdicionaItem(new ItemMenu
+        {
+            Codigo = 7,
+            DescricaoBR = "X-Burguer",
+            DescricaoEN = "Burger",
+            Preco = 22.90m,
+            EstaDisponivel = true,
+            Categoria = pratosPrincipais
+        });
+
+        cardapio.AdicionaItem(new ItemMenu
+        {
+            Codigo = 8,
+            DescricaoBR = "X-Salada",
+            DescricaoEN = "Salad Burger",
+            Preco = 24.90m,
+            EstaDisponivel = true,
+            Categoria = pratosPrincipais
+        });
+
+        cardapio.AdicionaItem(new ItemMenu
+        {
+            Codigo = 9,
+            DescricaoBR = "Prato Feito",
+            DescricaoEN = "Set Meal",
+            Preco = 28.90m,
+            EstaDisponivel = true,
+            Categoria = pratosPrincipais
+        });
+
+        cardapio.AdicionaItem(new ItemMenu
+        {
+            Codigo = 10,
+            DescricaoBR = "Brigadeiro",
+            DescricaoEN = "Chocolate Truffle",
+            Preco = 6.50m,
+            EstaDisponivel = true,
+            Categoria = sobremesas
+        });
+
+        cardapio.AdicionaItem(new ItemMenu
+        {
+            Codigo = 11,
+            DescricaoBR = "Pudim",
+            DescricaoEN = "Custard Pudding",
+            Preco = 7.50m,
+            EstaDisponivel = true,
+            Categoria = sobremesas
+        });
+
+        cardapio.AdicionaItem(new ItemMenu
+        {
+            Codigo = 12,
+            DescricaoBR = "Sorvete",
+            DescricaoEN = "Ice Cream",
+            Preco = 9.00m,
+            EstaDisponivel = true,
+            Categoria = sobremesas
         });
 
         return cardapio;
@@ -70,7 +168,7 @@ public class MockDeDados
 
     public Cliente[] CriarClientesPadrao()
     {
-        Cliente[] clientes = new Cliente[3];
+        Cliente[] clientes = new Cliente[5];
 
         clientes[0] = new Cliente
         {
@@ -90,6 +188,20 @@ public class MockDeDados
         {
             Nome = "Carla Mendes",
             Email = "carla.mendes@email.com",
+            AcessoDoUsuario = Acesso.Cliente
+        };
+
+        clientes[3] = new Cliente
+        {
+            Nome = "Diego Alves",
+            Email = "diego.alves@email.com",
+            AcessoDoUsuario = Acesso.Cliente
+        };
+
+        clientes[4] = new Cliente
+        {
+            Nome = "Elisa Rocha",
+            Email = "elisa.rocha@email.com",
             AcessoDoUsuario = Acesso.Cliente
         };
 
@@ -139,4 +251,3 @@ public class MockDeDados
         return (cardapio, clientes, administrador, gerenciador, gerenciador.TodosPedidos);
     }
 }
-

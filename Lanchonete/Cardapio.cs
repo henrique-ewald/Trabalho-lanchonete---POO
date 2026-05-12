@@ -27,21 +27,24 @@ public class Cardapio
         CardapioItens = NovoCardapio;
     }
 
-    public void EditarItem(ItemMenu item)
+    public ItemMenu EditarItem(ItemMenu item, bool estaDisponivel , decimal preco)
     {
-        throw new NotImplementedException();
+        item.EstaDisponivel = estaDisponivel;
+        item.Preco = preco;
+        return item;
     }
 
     public void RemoverItem(ItemMenu removido)
     {
         ItemMenu[] NovoVetor = new ItemMenu[CardapioItens.Length - 1];
 
-        int cont;
+        int cont, i=0;
         for (cont=0; cont < CardapioItens.Length; cont++)
         {
             if(removido.Codigo != CardapioItens[cont].Codigo)
             {
-                NovoVetor[cont] = CardapioItens[cont];
+                i++;
+                NovoVetor[i] = CardapioItens[cont];
             }
         }
         Console.WriteLine($"Item de código {removido.Codigo} removido.");

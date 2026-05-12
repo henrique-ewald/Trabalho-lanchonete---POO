@@ -7,7 +7,6 @@ public class Funcionario : Usuario, IMenuGerenciavel
 {
     private string Senha {get;set;}
     public string Cargo {get;set;}
-
     private Cardapio cardapio1 {get;set;}
     public Funcionario(Cardapio cardapio)
     {
@@ -30,6 +29,9 @@ public class Funcionario : Usuario, IMenuGerenciavel
 
     public void EditarItem(ItemMenu item)
     {
+        PedidoInput inputItem = new PedidoInput();
+        ItemMenu param = inputItem.EditarItemInputs();
+        cardapio1.EditarItem(item, param.EstaDisponivel, param.Preco);
         Console.WriteLine($"Item '{item.DescricaoBR}' editado\n");
     }
 
@@ -37,7 +39,6 @@ public class Funcionario : Usuario, IMenuGerenciavel
     {
         return tentativa == Senha;
     }
-
     public void AlteraSenha()
     {
         Console.WriteLine("Digite a sua nova senha:\n");

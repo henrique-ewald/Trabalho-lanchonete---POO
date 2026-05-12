@@ -4,5 +4,64 @@ namespace Lanchonete;
 
 public class UsuarioInput
 {
-    
+    public Cliente CriarCliente()
+    {
+        Console.WriteLine("Cadastro de cliente. Preencha as informacoes:\n");
+
+        return new Cliente
+        {
+            Nome = LerTexto("Nome:"),
+            Email = LerTexto("Email:"),
+            AcessoDoUsuario = Acesso.Cliente
+        };
+    }
+
+    public Funcionario CriarFuncionario(Cardapio cardapio)
+    {
+        Console.WriteLine("Cadastro de funcionario. Preencha as informacoes:\n");
+
+        Funcionario funcionario = new Funcionario(cardapio)
+        {
+            Nome = LerTexto("Nome:"),
+            Email = LerTexto("Email:"),
+            Cargo = LerTexto("Cargo:")
+        };
+
+        return funcionario;
+    }
+
+    public Administrador CriarAdministrador(Cardapio cardapio)
+    {
+        Console.WriteLine("Cadastro de administrador. Preencha as informacoes:\n");
+
+        Administrador administrador = new Administrador(cardapio)
+        {
+            Nome = LerTexto("Nome:"),
+            Email = LerTexto("Email:"),
+            Cargo = LerTexto("Cargo:")
+        };
+
+        return administrador;
+    }
+
+    private string LerTexto(string mensagem)
+    {
+        string texto = "";
+
+        while (texto == "")
+        {
+            Console.WriteLine(mensagem);
+            texto = Console.ReadLine();
+            if (texto == null)
+            {
+                texto = "";
+            }
+
+            texto = texto.Trim();
+        }
+
+        return texto;
+    }
+
+
 }

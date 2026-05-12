@@ -55,7 +55,7 @@ public class GerenciadorPedidos
                 }
             }
             item.PrecoUnitario = cardapio.CardapioItens[j].Preco;
-            item.Quantidade = quantItens[j];
+            item.Quantidade = quantItens[i];
             itens[i] = item;
         }
         return itens;

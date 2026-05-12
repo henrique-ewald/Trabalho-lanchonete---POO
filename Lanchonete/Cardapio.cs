@@ -38,13 +38,13 @@ public class Cardapio
     {
         ItemMenu[] NovoVetor = new ItemMenu[CardapioItens.Length - 1];
 
-        int cont, i=0;
+        int cont, i = 0;
         for (cont=0; cont < CardapioItens.Length; cont++)
         {
             if(removido.Codigo != CardapioItens[cont].Codigo)
             {
-                i++;
                 NovoVetor[i] = CardapioItens[cont];
+                i++;
             }
         }
         Console.WriteLine($"Item de código {removido.Codigo} removido.");

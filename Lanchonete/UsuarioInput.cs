@@ -44,17 +44,26 @@ public class UsuarioInput
         return administrador;
     }
 
-    private string LerTexto(string mensagem)
+    public string LerTexto(string mensagem)
     {
-        string texto = "";
+        Console.WriteLine(mensagem);
+        string texto = Console.ReadLine();
+
+        if (texto == null)
+        {
+            return "";
+        }
+
+        texto = texto.Trim();
 
         while (texto == "")
         {
             Console.WriteLine(mensagem);
             texto = Console.ReadLine();
+
             if (texto == null)
             {
-                texto = "";
+                return "";
             }
 
             texto = texto.Trim();

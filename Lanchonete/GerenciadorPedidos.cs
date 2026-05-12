@@ -42,23 +42,35 @@ public class GerenciadorPedidos
     {
         int quant = codigosItens.Length;
         ItemPedido[] itens = new ItemPedido[quant];
-        int j;
         for(int i=0; i < quant; i++)
         {
-            ItemPedido item = new ItemPedido();
-            for(j=0; j < cardapio.CardapioItens.Length ;j++)
+            ItemMenu itemCardapio = BuscarItem(cardapio, codigosItens[i]);
+            if (itemCardapio == null)
             {
-                if (codigosItens[i] == cardapio.CardapioItens[j].Codigo)
-                {
-                    item.Item = cardapio.CardapioItens[j];
-                    break;
-                }
+                Console.WriteLine($"Item de código {codigosItens[i]} não encontrado.");
+                continue;
             }
-            item.PrecoUnitario = cardapio.CardapioItens[j].Preco;
+
+            ItemPedido item = new ItemPedido();
+            item.Item = itemCardapio;
+            item.PrecoUnitario = itemCardapio.Preco;
             item.Quantidade = quantItens[i];
             itens[i] = item;
         }
         return itens;
+    }
+
+    private ItemMenu BuscarItem(Cardapio cardapio, int codigo)
+    {
+        foreach (var item in cardapio.CardapioItens)
+        {
+            if (item.Codigo == codigo)
+            {
+                return item;
+            }
+        }
+
+        return null;
     }
     private TipoGenerico[] AdicionaAoVetorGenerico<TipoGenerico>(TipoGenerico Novo, TipoGenerico[] VetorGenerico)
     {
@@ -77,23 +89,23 @@ public class GerenciadorPedidos
     }
     public Pedido AdicionarItemAoPedido(Pedido pedido, Cardapio cardapio, int[] CodigoItem, int[] quantItens)
     {   
-        int i;
-        foreach (var itemCardapio in cardapio.CardapioItens)
+        for (int i = 0; i < CodigoItem.Length; i++)
         {
-            for(i=0; i < CodigoItem.Length; i++)
+            ItemMenu itemCardapio = BuscarItem(cardapio, CodigoItem[i]);
+            if (itemCardapio == null)
             {
-                if(itemCardapio.Codigo == CodigoItem[i])
-                {
-                    ItemPedido Item = new ItemPedido
-                    {
-                        Quantidade = quantItens[i],
-                        PrecoUnitario = itemCardapio.Preco,
-                        Item = itemCardapio
-                    };
-                    pedido.ItensPedidos = AdicionaAoVetorGenerico(Item, pedido.ItensPedidos);
-                    pedido.ValorTotal = CalcularValor(CodigoItem, quantItens, cardapio);
-                }
+                Console.WriteLine($"Item de código {CodigoItem[i]} não encontrado.");
+                continue;
             }
+
+            ItemPedido Item = new ItemPedido
+            {
+                Quantidade = quantItens[i],
+                PrecoUnitario = itemCardapio.Preco,
+                Item = itemCardapio
+            };
+            pedido.ItensPedidos = AdicionaAoVetorGenerico(Item, pedido.ItensPedidos);
+            pedido.ValorTotal += itemCardapio.Preco * quantItens[i];
         }
         return pedido;
     }

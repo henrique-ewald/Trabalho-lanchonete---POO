@@ -11,4 +11,6 @@ public class Cliente : Usuario
         Email = "Não informado";
         AcessoDoUsuario = Acesso.Cliente;
     }
+
+    public Lanchonete.Acesso AcessoDoUsuario { get; set; }
 }

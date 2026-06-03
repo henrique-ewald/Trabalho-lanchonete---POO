@@ -1,10 +1,7 @@
 using System;
+using Domain;
 
 namespace Lanchonete;
-
-public enum Idioma { Portugues, Ingles }
-
-public enum Acesso {Cliente, Funcionario, Administrador}
 
 public class Usuario
 {

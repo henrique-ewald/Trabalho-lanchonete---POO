@@ -1,4 +1,5 @@
 using System;
+using Domain;
 
 namespace Lanchonete;
 
@@ -237,7 +238,7 @@ public class MockDeDados
         return gerenciador.TodosPedidos;
     }
 
-    public (Cardapio Cardapio, Cliente[] Clientes, Administrador Administrador, GerenciadorPedidos Gerenciador, Pedido[] Pedidos) CriarCenarioCompleto()
+    public (Cardapio cardapio, Cliente[] Clientes, Administrador Administrador, GerenciadorPedidos Gerenciador, Pedido[] Pedidos) CriarCenarioCompleto()
     {
         Cardapio cardapio = CriarCardapioPadrao();
         Cliente[] clientes = CriarClientesPadrao();

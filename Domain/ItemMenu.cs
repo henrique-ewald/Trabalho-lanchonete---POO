@@ -2,7 +2,6 @@ using System;
 
 namespace Lanchonete;
 
-public enum Descricao {BR, EN}
 public class ItemMenu
 {
     public int Codigo {get;set;}

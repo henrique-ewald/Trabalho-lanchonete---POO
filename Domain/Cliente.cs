@@ -1,4 +1,5 @@
 using System;
+using Domain;
 
 namespace Lanchonete;
 
@@ -12,5 +13,4 @@ public class Cliente : Usuario
         AcessoDoUsuario = Acesso.Cliente;
     }
 
-    public Lanchonete.Acesso AcessoDoUsuario { get; set; }
 }

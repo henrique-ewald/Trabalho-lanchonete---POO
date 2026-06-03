@@ -1,8 +1,7 @@
 using System;
+using Domain;
 
 namespace Lanchonete;
-
-public enum Status {Aberto, Pago, Encerrado}
 
 public class Pedido
 {

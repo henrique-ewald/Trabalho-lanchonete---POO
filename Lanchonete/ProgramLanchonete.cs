@@ -1,4 +1,5 @@
 ﻿using System;
+using Domain;
 using Lanchonete;
 
 namespace Program;
@@ -12,7 +13,7 @@ public class Program
         MockDeDados mock = new MockDeDados();
         var cenario = mock.CriarCenarioCompleto();
 
-        Cardapio cardapio = cenario.Cardapio;
+        Cardapio cardapio = cenario.cardapio;
         Cliente[] clientes = cenario.Clientes;
         Administrador administrador = cenario.Administrador;
         GerenciadorPedidos gerenciador = cenario.Gerenciador;

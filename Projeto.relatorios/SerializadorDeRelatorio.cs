@@ -4,8 +4,12 @@ namespace Lanchonete;
 
 public class SerializadorDeRelatorio : GeradorDeRelatorio
 {
+    public SerializadorDeRelatorio(GerenciadorPedidos gerenciador)
+    {
+        this.gerenciador = gerenciador;
+    }
     public override void RegistrarInformacao(string conteudo)
     {
-        File.WriteAllText("arquivo.txt", conteudo);
+        File.AppendAllText("arquivo.txt", $"{conteudo}\n");
     }
 }

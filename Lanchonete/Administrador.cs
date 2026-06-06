@@ -14,7 +14,7 @@ public class Administrador : Usuario, IMenuGerenciavel
         cardapio1 = cardapio;
         Senha = "12345";
         Cargo = "ADM anonimo";
-        AcessoDoUsuario = Acesso.Administrador;
+        AcessoDoUsuario = Domain.Acesso.Administrador;
     }
 
     public void GerarRelatorio()

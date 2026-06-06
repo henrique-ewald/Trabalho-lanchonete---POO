@@ -1,6 +1,7 @@
 ﻿using System;
 using Domain;
 using Lanchonete;
+using Projeto.Relatorios;
 
 namespace Program;
 
@@ -17,7 +18,8 @@ public class Program
         Cliente[] clientes = cenario.Clientes;
         Administrador administrador = cenario.Administrador;
         GerenciadorPedidos gerenciador = cenario.Gerenciador;
-        GeradorDeRelatorio relatorio = new GeradorDeRelatorio(gerenciador);
+        PrintaRelatorios PrinterRelatorio = new PrintaRelatorios(gerenciador);
+        SerializadorDeRelatorio Serializador = new SerializadorDeRelatorio(gerenciador);
 
         PedidoInput pedidoInput = new PedidoInput();
         UsuarioInput usuarioInput = new UsuarioInput();
@@ -245,13 +247,30 @@ public class Program
                                     }
                                 }
                                 else if (opcaoAdm == 2)
-                                    relatorio.RelatorioPorPeriodo(idioma);
+                                {
+                                    Console.WriteLine("Data inicial (dd/MM/yyyy):");
+                                    DateTime inicio = DateTime.Parse(Console.ReadLine());
+                                    Console.WriteLine("Data final (dd/MM/yyyy):");
+                                    DateTime fim = DateTime.Parse(Console.ReadLine());
+                                    Serializador.RelatorioPorPeriodo(idioma, inicio, fim);
+                                    PrinterRelatorio.RelatorioPorPeriodo(idioma, inicio, fim);   
+                                }
                                 else if (opcaoAdm == 3)
-                                    relatorio.RelatorioPorCliente(idioma);
+                                {
+                                    Serializador.RelatorioPorCliente(idioma);
+                                    PrinterRelatorio.RelatorioPorCliente(idioma);
+                                }
                                 else if (opcaoAdm == 4)
-                                    relatorio.RelatorioPorClienteEmPeriodo(idioma);
+                                {
+                                    Serializador.RelatorioPorClienteEmPeriodo(idioma);
+                                    PrinterRelatorio.RelatorioPorClienteEmPeriodo(idioma);
+                                    
+                                }
                                 else if (opcaoAdm == 5)
-                                    relatorio.RelatorioDeItemDoMenu(idioma, cardapio);
+                                {
+                                    Serializador.RelatorioDeItemDoMenu(idioma, cardapio);
+                                    PrinterRelatorio.RelatorioDeItemDoMenu(idioma, cardapio);                                    
+                                }
                             }
                             catch { Console.WriteLine(opcaoInvalida); }
                         }

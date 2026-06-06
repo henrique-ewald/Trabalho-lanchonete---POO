@@ -20,13 +20,8 @@ public abstract class GeradorDeRelatorio
             return false; 
         }
     }
-    public void RelatorioPorPeriodo(Idioma idioma)
+    public void RelatorioPorPeriodo(Idioma idioma, DateTime inicio, DateTime fim)
     {
-        RegistrarInformacao("Data inicial (dd/MM/yyyy):");
-        DateTime inicio = DateTime.Parse(Console.ReadLine());
-        RegistrarInformacao("Data final (dd/MM/yyyy):");
-        DateTime fim = DateTime.Parse(Console.ReadLine());
-
         if (fim < inicio)
         {
             DateTime troca = inicio;

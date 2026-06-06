@@ -3,28 +3,28 @@ using Domain;
 
 namespace Lanchonete;
 
-public class GeradorDeRelatorio
+public abstract class GeradorDeRelatorio
 {
-    private GerenciadorPedidos gerenciador;
+    protected GerenciadorPedidos gerenciador;
 
-    public GeradorDeRelatorio(GerenciadorPedidos gerenciador)
+    public abstract void RegistrarInformacao(string conteudo);
+
+    public bool GerenciadorEhNull(GerenciadorPedidos gerenciador)
     {
-        this.gerenciador = gerenciador;
-
-        if (this.gerenciador == null)
+        if (gerenciador == null)
         {
-            this.gerenciador = new GerenciadorPedidos
-            {
-                TodosPedidos = new Pedido[0]
-            };
+            return true;
+        }
+        else
+        {
+            return false; 
         }
     }
-
     public void RelatorioPorPeriodo(Idioma idioma)
     {
-        Console.WriteLine("Data inicial (dd/MM/yyyy):");
+        RegistrarInformacao("Data inicial (dd/MM/yyyy):");
         DateTime inicio = DateTime.Parse(Console.ReadLine());
-        Console.WriteLine("Data final (dd/MM/yyyy):");
+        RegistrarInformacao("Data final (dd/MM/yyyy):");
         DateTime fim = DateTime.Parse(Console.ReadLine());
 
         if (fim < inicio)
@@ -46,7 +46,7 @@ public class GeradorDeRelatorio
 
         if (!encontrou)
         {
-            Console.WriteLine("Nenhum pedido encontrado nesse periodo.");
+            RegistrarInformacao("Nenhum pedido encontrado nesse periodo.");
         }
     }
 
@@ -122,7 +122,7 @@ public class GeradorDeRelatorio
             return;
         }
         bool encontrou = false;
-        Console.WriteLine($"\nConsumo do item: {itemProcurado.DescricaoBR}");
+        RegistrarInformacao($"\nConsumo do item: {itemProcurado.DescricaoBR}");
         foreach (Pedido pedido in gerenciador.TodosPedidos)
         {
             if (PedidoContemItem(pedido, codigo))
@@ -132,13 +132,13 @@ public class GeradorDeRelatorio
                 {
                     nomeCliente = pedido.Consumidor.Nome;
                 }
-                Console.WriteLine($"Pedido #{pedido.id} | {nomeCliente} | {pedido.CriadoEm:dd/MM/yyyy HH:mm}");
+                RegistrarInformacao($"Pedido #{pedido.id} | {nomeCliente} | {pedido.CriadoEm:dd/MM/yyyy HH:mm}");
                 encontrou = true;
             }
         }
         if (!encontrou)
         {
-            Console.WriteLine("Esse item ainda nao apareceu em nenhum pedido.");
+            RegistrarInformacao("Esse item ainda nao apareceu em nenhum pedido.");
         }
     }
 
@@ -163,7 +163,17 @@ public class GeradorDeRelatorio
             nomeCliente = pedido.Consumidor.Nome;
         }
 
-        Console.WriteLine($"#{pedido.id} | {nomeCliente} | {pedido.CriadoEm:dd/MM/yyyy HH:mm} | {pedido.StatusAtual} | R${pedido.ValorTotal:F2}");
+        RegistrarInformacao($"#{pedido.id} | {nomeCliente} | {pedido.CriadoEm:dd/MM/yyyy HH:mm} | {pedido.StatusAtual} | R${pedido.ValorTotal:F2}\nItens pedidos: {PrintaItensPedidos(pedido)}");
+    }
+
+    private string PrintaItensPedidos(Pedido pedido)
+    {
+        string resultado = "";
+        foreach (var item in pedido.ItensPedidos)
+        {
+            resultado += $" | {item.Item.DescricaoBR} |";
+        }
+        return resultado;
     }
 
     private bool PedidoEhDoCliente(Pedido pedido, string busca)

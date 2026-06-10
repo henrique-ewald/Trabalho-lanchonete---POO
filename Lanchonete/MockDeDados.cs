@@ -1,5 +1,8 @@
 using System;
 using Domain;
+using Projeto.Pedidos;
+using Projeto.CardapioDeItens;
+
 
 namespace Lanchonete;
 

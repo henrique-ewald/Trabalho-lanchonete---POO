@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
-    <ProjectReference Include="..\Projeto.Cardapio\Projeto.Cardapio.csproj" />
+    <ProjectReference Include="..\Projeto.CardapioDeItens\Projeto.CardapioDeItens.csproj" />
   </ItemGroup>
 
 </Project>

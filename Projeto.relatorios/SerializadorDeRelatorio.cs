@@ -1,4 +1,5 @@
 using System;
+using Projeto.Pedidos;
 
 namespace Lanchonete;
 

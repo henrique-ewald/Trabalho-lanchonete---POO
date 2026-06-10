@@ -1,6 +1,7 @@
 using System;
+using Lanchonete;
 
-namespace Lanchonete;
+namespace Projeto.Pedidos;
 
 public class PedidoInput
 {

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
+    <ProjectReference Include="..\Projeto.CardapioDeItens\Projeto.CardapioDeItens.csproj" />
     <ProjectReference Include="..\Projeto.Pedidos\Projeto.Pedidos.csproj" />
   </ItemGroup>
 

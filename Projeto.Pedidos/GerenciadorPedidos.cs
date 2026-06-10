@@ -1,11 +1,14 @@
 using System;
 using Domain;
+using Lanchonete;
+using Projeto.CardapioDeItens;
 
-namespace Lanchonete;
+namespace Projeto.Pedidos;
 
 public class GerenciadorPedidos
 {
     public Pedido[] TodosPedidos {get;set;}
+
 
     public Pedido CriarPedido(Cliente? consumidor, Cardapio cardapio, int[] codigosItens, int[] quantItens, int PessoasPDividir)
     {
@@ -29,7 +32,7 @@ public class GerenciadorPedidos
         decimal ValorTotal=0;
         for(i=0; i< codigosItens.Length; i++)
         {
-            for(j=0; j < cardapio.CardapioItens.Length; j++)
+            for(j=0; j < cardapio.CardapioItens.Count(); j++)
             {
                 if (codigosItens[i] == cardapio.CardapioItens[j].Codigo)
                 {

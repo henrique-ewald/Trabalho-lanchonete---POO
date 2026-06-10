@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Domain\Domain.csproj" />
-    <ProjectReference Include="..\Projeto.Cardapio\Projeto.Cardapio.csproj" />
+    <ProjectReference Include="..\Projeto.CardapioDeItens\Projeto.CardapioDeItens.csproj" />
     <ProjectReference Include="..\Projeto.Pedidos\Projeto.Pedidos.csproj" />
     <ProjectReference Include="..\Projeto.relatorios\Projeto.relatorios.csproj" />
   </ItemGroup>

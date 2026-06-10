@@ -1,5 +1,6 @@
 using System;
 using Lanchonete;
+using Projeto.Pedidos;
 
 namespace Projeto.Relatorios;
 

@@ -10,7 +10,7 @@ public class UsuarioComPermissao : Usuario, IMenuGerenciavel
 {
     protected string Senha {get;set;}
     public string Cargo {get;set;}
-    protected Cardapio cardapio1 {get;set;}
+    protected GerenciadorCardapio cardapio1 {get;set;}
     public void AdicionaItem(ItemMenu novo)
     {
         cardapio1.AdicionaItem(novo);

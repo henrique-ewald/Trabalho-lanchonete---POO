@@ -7,7 +7,7 @@ namespace Lanchonete;
 
 public class Funcionario : UsuarioComPermissao
 {
-    public Funcionario(Cardapio cardapio)
+    public Funcionario(GerenciadorCardapio cardapio)
     {
         id = GeraId();
         cardapio1 = cardapio;

@@ -18,7 +18,7 @@ public class UsuarioInput
         };
     }
 
-    public Funcionario CriarFuncionario(Cardapio cardapio)
+    public Funcionario CriarFuncionario(GerenciadorCardapio cardapio)
     {
         Console.WriteLine("Cadastro de funcionario. Preencha as informacoes:\n");
 
@@ -32,7 +32,7 @@ public class UsuarioInput
         return funcionario;
     }
 
-    public Administrador CriarAdministrador(Cardapio cardapio)
+    public Administrador CriarAdministrador(GerenciadorCardapio cardapio)
     {
         Console.WriteLine("Cadastro de administrador. Preencha as informacoes:\n");
 

@@ -18,6 +18,7 @@ public class Program
         var cenario = mock.CriarCenarioCompleto();
 
         Cardapio cardapio = cenario.cardapio;
+        GerenciadorCardapio cardapioADM = cenario.cardapioADM;
         Cliente[] clientes = cenario.Clientes;
         Administrador administrador = cenario.Administrador;
         GerenciadorPedidos gerenciador = cenario.Gerenciador;
@@ -150,7 +151,7 @@ public class Program
                 else if (opcao == 2)
                 {
                     Console.WriteLine(idioma == Idioma.Portugues ? "Senha:" : "Password:");
-                    Funcionario funcionario = new Funcionario(cardapio) { Nome = "Funcionário" };
+                    Funcionario funcionario = new Funcionario(cardapioADM) { Nome = "Funcionário" };
                     string senhaFuncionario = Console.ReadLine();
                     if (funcionario.ValidarSenha(senhaFuncionario))
                     {

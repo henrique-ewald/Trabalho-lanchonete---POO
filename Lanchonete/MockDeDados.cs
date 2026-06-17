@@ -241,7 +241,7 @@ public class MockDeDados
         return gerenciador.TodosPedidos;
     }
 
-    public (GerenciadorCardapio cardapioADM, Cardapio cardapio, Cliente[] Clientes, Administrador Administrador, GerenciadorPedidos Gerenciador, Pedido[] Pedidos) CriarCenarioCompleto()
+    public DadosGerais CriarCenarioCompleto()
     {
         var cardapioGenerico = CriarCardapioPadrao();
         Cliente[] clientes = CriarClientesPadrao();
@@ -251,7 +251,14 @@ public class MockDeDados
         gerenciador.CriarPedido(clientes[0], cardapioGenerico.cardapio, new int[] { 1, 2, 3 }, new int[] { 2, 1, 1 }, 2);
         gerenciador.CriarPedido(clientes[1], cardapioGenerico.cardapio, new int[] { 1, 2, 3, 4 }, new int[] { 1, 2, 1, 1 }, 3);
         gerenciador.CriarPedido(clientes[2], cardapioGenerico.cardapio, new int[] { 1, 2, 3, 4, 5, 6 }, new int[] { 1, 1, 1, 1, 1, 1 }, 1);
-
-        return (cardapioGenerico.CardapioADM, cardapioGenerico.cardapio, clientes, administrador, gerenciador, gerenciador.TodosPedidos);
+        var DadosGerais = new DadosGerais
+        {
+            Cardapio = cardapioGenerico.cardapio,
+            CardapioADM = cardapioGenerico.CardapioADM,
+            Gerenciador = gerenciador,
+            Administrador = administrador,
+            
+        };
+        return DadosGerais;
     }
 }

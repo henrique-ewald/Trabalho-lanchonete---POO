@@ -5,6 +5,7 @@ using Projeto.Pedidos;
 using Projeto.Relatorios;
 using Projeto.CardapioDeItens;
 using System.Text.Json;
+using System.Runtime.InteropServices;
 
 
 namespace Program;
@@ -13,12 +14,23 @@ public class Program
 {
     static void Main(string[] args)
     {
-        DadosGerais Dados = new DadosGerais();
+        DadosGerais informacoesMockOuDoarquivo; // DEPENDENDO DO CASO, PEGAR ISSO DO ARQUIVO OU DO MOCK
+        
+
+        if (File.Exists("arquivo.txt")) // MUDAR PARA .JSON DEPOIS
+        {
+            if (File.ReadAllText("arquivo.txt") == null)
+            {
+                bool ArqExists = false;
+
+            }
+        }
+        //DadosGerais Dados = new DadosGerais();
         //JsonSerializer.Deserialize()
         string opcaoInvalida = "Informe uma opcao valida.";
 
         MockDeDados mock = new MockDeDados();
-        var cenario = mock.CriarCenarioCompleto();
+        var cenario = mock.CriarCenarioCompleto(); //RETORNAR DADOS GERAIS NESSE METODO.
 
         Cardapio cardapio = cenario.cardapio;
         GerenciadorCardapio cardapioADM = cenario.cardapioADM;

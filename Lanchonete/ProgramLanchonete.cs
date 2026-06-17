@@ -4,6 +4,7 @@ using Lanchonete;
 using Projeto.Pedidos;
 using Projeto.Relatorios;
 using Projeto.CardapioDeItens;
+using System.Text.Json;
 
 
 namespace Program;
@@ -12,6 +13,8 @@ public class Program
 {
     static void Main(string[] args)
     {
+        DadosGerais Dados = new DadosGerais();
+        //JsonSerializer.Deserialize()
         string opcaoInvalida = "Informe uma opcao valida.";
 
         MockDeDados mock = new MockDeDados();
@@ -19,7 +22,6 @@ public class Program
 
         Cardapio cardapio = cenario.cardapio;
         GerenciadorCardapio cardapioADM = cenario.cardapioADM;
-        Cliente[] clientes = cenario.Clientes;
         Administrador administrador = cenario.Administrador;
         GerenciadorPedidos gerenciador = cenario.Gerenciador;
         PrintaRelatorios PrinterRelatorio = new PrintaRelatorios(gerenciador);

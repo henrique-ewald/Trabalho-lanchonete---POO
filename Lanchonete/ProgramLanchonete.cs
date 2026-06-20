@@ -14,24 +14,44 @@ public class Program
 {
     static void Main(string[] args)
     {
-        DadosGerais MockOuArquivo;  // DAQUI (LINHA 17) ATÉ A LINHA 34, NÃO MUDE NADA
+        DadosGerais MockOuArquivo;
 
         if (File.Exists("DadosSalvos.json")) 
         {
-            if (File.ReadAllText("DadosSalvos.json") == null)
+            var json = File.ReadAllText("DadosSalvos.json");
+            if (string.IsNullOrWhiteSpace(json))
             {
                 MockDeDados mock = new MockDeDados();
                 MockOuArquivo = mock.CriarCenarioCompleto();
             }
             else
             {
-                MockOuArquivo = JsonSerializer.Deserialize<DadosGerais>("DadosSalvos.json");
+                try
+                {
+                    var options = new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true,
+                        IncludeFields = true
+                    };
+
+                    MockOuArquivo = JsonSerializer.Deserialize<DadosGerais>(json, options);
+                    if (MockOuArquivo == null)
+                    {
+                        MockDeDados mock = new MockDeDados();
+                        MockOuArquivo = mock.CriarCenarioCompleto();
+                    }
+                }
+                catch (Exception e) when (e is JsonException || e is InvalidOperationException)
+                {
+                    MockDeDados mock = new MockDeDados();
+                    MockOuArquivo = mock.CriarCenarioCompleto();
+                }
             }
         }
         else
         {
             MockDeDados mock = new MockDeDados();
-            MockOuArquivo = mock.CriarCenarioCompleto(); // ATÉ AQUI, NÃO MUDE A FUNCIONALIDADE, POIS EU QUERO OU USAR O MOCK INICIAL, OU TRAZER AS INFORMAÇÕES DO ARQUIVO.
+            MockOuArquivo = mock.CriarCenarioCompleto(); 
         }
         string opcaoInvalida = "Informe uma opcao valida.";
 

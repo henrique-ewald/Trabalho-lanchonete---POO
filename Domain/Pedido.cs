@@ -1,7 +1,7 @@
 using System;
 using Domain;
 
-namespace Lanchonete;
+namespace Domain;
 
 public class Pedido
 {

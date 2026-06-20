@@ -1,6 +1,5 @@
 using System;
 using Domain;
-using Lanchonete;
 using Projeto.CardapioDeItens;
 
 namespace Projeto.Pedidos;
@@ -8,7 +7,6 @@ namespace Projeto.Pedidos;
 public class GerenciadorPedidos
 {
     public Pedido[] TodosPedidos {get;set;}
-
 
     public Pedido CriarPedido(Cliente? consumidor, Cardapio cardapio, int[] codigosItens, int[] quantItens, int PessoasPDividir)
     {

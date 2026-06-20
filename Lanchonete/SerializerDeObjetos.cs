@@ -11,8 +11,17 @@ namespace Lanchonete;
 public class SerializerDeObjetos
 {
     public string jsonString {get;set;}
-    public SerializerDeObjetos(DadosGerais Dados)
+    public void SerializarObjeto(DadosGerais Dados)
     {
         jsonString = JsonSerializer.Serialize(Dados);
+        File.WriteAllText("DadosSalvos.json", jsonString);
+    }
+    public void SerializerInicial()
+    {
+        MockDeDados mock = new MockDeDados();
+        DadosGerais dados;
+        dados = mock.CriarCenarioCompleto();
+        jsonString = JsonSerializer.Serialize(dados);
+        File.WriteAllText("DadosSalvos.json", jsonString);
     }
 }

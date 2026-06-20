@@ -1,5 +1,5 @@
 using System;
-using Lanchonete;
+using Domain;
 
 namespace Projeto.CardapioDeItens;
 

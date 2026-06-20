@@ -2,31 +2,39 @@ using System;
 using Lanchonete;
 using Projeto.Pedidos;
 using Projeto.CardapioDeItens;
+using Domain;
 
 
-namespace Domain;
+namespace Lanchonete;
 
 public class UsuarioComPermissao : Usuario, IMenuGerenciavel
 {
     protected string Senha {get;set;}
     public string Cargo {get;set;}
     protected GerenciadorCardapio cardapio1 {get;set;}
-    public void AdicionaItem(ItemMenu novo)
+    private SerializerDeObjetos SerializadorOBJ {get;set;}
+    public void AdicionaItem(ItemMenu novo, DadosGerais dados)
     {
         cardapio1.AdicionaItem(novo);
+        dados.CardapioADM.AdicionaItem(novo);
+        SerializadorOBJ.SerializarObjeto(dados);
         Console.WriteLine("Item adicionado com sucesso!\n");
     }
-    public void RemoverItem(ItemMenu removido)
+    public void RemoverItem(ItemMenu removido, DadosGerais dados)
     {
         cardapio1.RemoverItem(removido);
+        dados.CardapioADM.RemoverItem(removido);
+        SerializadorOBJ.SerializarObjeto(dados);
         Console.WriteLine("Item removido com sucesso!\n");
     }
 
-    public void EditarItem(ItemMenu item)
+    public void EditarItem(ItemMenu item, DadosGerais dados)
     {
         PedidoInput inputItem = new PedidoInput();
         ItemMenu param = inputItem.EditarItemInputs();
         cardapio1.EditarItem(item, param.EstaDisponivel, param.Preco);
+        dados.CardapioADM.EditarItem(item, param.EstaDisponivel, param.Preco);
+        SerializadorOBJ.SerializarObjeto(dados);
         Console.WriteLine($"Item '{item.DescricaoBR}' editado\n");
     }
 
@@ -34,7 +42,7 @@ public class UsuarioComPermissao : Usuario, IMenuGerenciavel
     {
         return tentativa == Senha;
     }
-    public void AlteraSenha()
+    public void AlteraSenha(DadosGerais dados)
     {
         Console.WriteLine("Digite a sua nova senha:\n");
         string SenhaNova = Console.ReadLine();
@@ -43,5 +51,6 @@ public class UsuarioComPermissao : Usuario, IMenuGerenciavel
         {
             Senha = SenhaNova;
         }
+        
     }
 }

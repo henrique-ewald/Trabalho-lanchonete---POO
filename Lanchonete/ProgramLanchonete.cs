@@ -14,30 +14,34 @@ public class Program
 {
     static void Main(string[] args)
     {
-        DadosGerais informacoesMockOuDoarquivo; // DEPENDENDO DO CASO, PEGAR ISSO DO ARQUIVO OU DO MOCK
-        
+        DadosGerais MockOuArquivo;  // DAQUI (LINHA 17) ATÉ A LINHA 34, NÃO MUDE NADA
 
-        if (File.Exists("arquivo.txt")) // MUDAR PARA .JSON DEPOIS
+        if (File.Exists("DadosSalvos.json")) 
         {
-            if (File.ReadAllText("arquivo.txt") == null)
+            if (File.ReadAllText("DadosSalvos.json") == null)
             {
-                bool ArqExists = false;
-
+                MockDeDados mock = new MockDeDados();
+                MockOuArquivo = mock.CriarCenarioCompleto();
+            }
+            else
+            {
+                MockOuArquivo = JsonSerializer.Deserialize<DadosGerais>("DadosSalvos.json");
             }
         }
-        //DadosGerais Dados = new DadosGerais();
-        //JsonSerializer.Deserialize()
+        else
+        {
+            MockDeDados mock = new MockDeDados();
+            MockOuArquivo = mock.CriarCenarioCompleto(); // ATÉ AQUI, NÃO MUDE A FUNCIONALIDADE, POIS EU QUERO OU USAR O MOCK INICIAL, OU TRAZER AS INFORMAÇÕES DO ARQUIVO.
+        }
         string opcaoInvalida = "Informe uma opcao valida.";
 
-        MockDeDados mock = new MockDeDados();
-        var cenario = mock.CriarCenarioCompleto(); //RETORNAR DADOS GERAIS NESSE METODO.
-
-        Cardapio cardapio = cenario.cardapio;
-        GerenciadorCardapio cardapioADM = cenario.cardapioADM;
-        Administrador administrador = cenario.Administrador;
-        GerenciadorPedidos gerenciador = cenario.Gerenciador;
+        Cardapio cardapio = MockOuArquivo.Cardapio;
+        GerenciadorCardapio cardapioADM = MockOuArquivo.CardapioADM;
+        Administrador administrador = MockOuArquivo.Administrador;
+        GerenciadorPedidos gerenciador = MockOuArquivo.Gerenciador;
+        SerializerDeObjetos serializerDeObjetos = new SerializerDeObjetos();
         PrintaRelatorios PrinterRelatorio = new PrintaRelatorios(gerenciador);
-        SerializadorDeRelatorio Serializador = new SerializadorDeRelatorio(gerenciador);
+        SerializadorDeRelatorio SerializadorDeRelatorio = new SerializadorDeRelatorio(gerenciador);
 
         PedidoInput pedidoInput = new PedidoInput();
         UsuarioInput usuarioInput = new UsuarioInput();
@@ -127,6 +131,8 @@ public class Program
                             {
                                 DadosPedido dados = pedidoInput.PedidoInputs();
                                 Pedido pedido = gerenciador.CriarPedido(consumidor, cardapio, dados.CodigosItens, dados.QuantItens, dados.PessoasPDividir);
+                                MockOuArquivo.Gerenciador.CriarPedido(consumidor, cardapio, dados.CodigosItens, dados.QuantItens, dados.PessoasPDividir);
+                                serializerDeObjetos.SerializarObjeto(MockOuArquivo);
                                 Console.WriteLine($"Pedido #{pedido.id} criado! Total: R${pedido.ValorTotal:F2}");
                             }
                             else if (opcaoCliente == 3)
@@ -141,6 +147,8 @@ public class Program
                                 {
                                     DadosPedido dados = pedidoInput.PedidoInputs();
                                     gerenciador.AdicionarItemAoPedido(encontrado, cardapio, dados.CodigosItens, dados.QuantItens);
+                                    MockOuArquivo.Gerenciador.AdicionarItemAoPedido(encontrado, cardapio, dados.CodigosItens, dados.QuantItens);
+                                    serializerDeObjetos.SerializarObjeto(MockOuArquivo);
                                 }
                                 else
                                     Console.WriteLine(idioma == Idioma.Portugues ? "Pedido não encontrado ou já encerrado." : "Order not found or already closed.");
@@ -154,7 +162,11 @@ public class Program
                                     if (p.id == idPedido) encontrado = p;
 
                                 if (encontrado != null)
+                                {
                                     gerenciador.AtualizarStatusPedido(encontrado);
+                                    MockOuArquivo.Gerenciador.AtualizarStatusPedido(encontrado);
+                                    serializerDeObjetos.SerializarObjeto(MockOuArquivo);
+                                }
                                 else
                                     Console.WriteLine(idioma == Idioma.Portugues ? "Pedido não encontrado." : "Order not found.");
                             }
@@ -207,19 +219,19 @@ public class Program
                                     Console.WriteLine("Description EN:"); string descEN = Console.ReadLine();
                                     Console.WriteLine("Preço:"); decimal preco = decimal.Parse(Console.ReadLine());
                                     ItemMenu novo = new ItemMenu { Codigo = cod, DescricaoBR = descBR, DescricaoEN = descEN, Preco = preco, EstaDisponivel = true, Categoria = cardapio.Entradas };
-                                    funcionario.AdicionaItem(novo);
+                                    funcionario.AdicionaItem(novo, MockOuArquivo);
                                 }
                                 else if (opcaoFunc == 3)
                                 {
                                     Console.WriteLine("Código do item:"); int cod = int.Parse(Console.ReadLine());
                                     foreach (var item in cardapio.CardapioItens)
-                                        if (item.Codigo == cod) funcionario.EditarItem(item);
+                                        if (item.Codigo == cod) funcionario.EditarItem(item, MockOuArquivo);
                                 }
                                 else if (opcaoFunc == 4)
                                 {
                                     Console.WriteLine("Código do item:"); int cod = int.Parse(Console.ReadLine());
                                     foreach (var item in cardapio.CardapioItens)
-                                        if (item.Codigo == cod) funcionario.RemoverItem(item);
+                                        if (item.Codigo == cod) funcionario.RemoverItem(item, MockOuArquivo);
                                 }
                             }
                             catch { Console.WriteLine(opcaoInvalida); }
@@ -270,23 +282,23 @@ public class Program
                                     DateTime inicio = DateTime.Parse(Console.ReadLine());
                                     Console.WriteLine("Data final (dd/MM/yyyy):");
                                     DateTime fim = DateTime.Parse(Console.ReadLine());
-                                    Serializador.RelatorioPorPeriodo(idioma, inicio, fim);
+                                    SerializadorDeRelatorio.RelatorioPorPeriodo(idioma, inicio, fim);
                                     PrinterRelatorio.RelatorioPorPeriodo(idioma, inicio, fim);   
                                 }
                                 else if (opcaoAdm == 3)
                                 {
-                                    Serializador.RelatorioPorCliente(idioma);
+                                    SerializadorDeRelatorio.RelatorioPorCliente(idioma);
                                     PrinterRelatorio.RelatorioPorCliente(idioma);
                                 }
                                 else if (opcaoAdm == 4)
                                 {
-                                    Serializador.RelatorioPorClienteEmPeriodo(idioma);
+                                    SerializadorDeRelatorio.RelatorioPorClienteEmPeriodo(idioma);
                                     PrinterRelatorio.RelatorioPorClienteEmPeriodo(idioma);
                                     
                                 }
                                 else if (opcaoAdm == 5)
                                 {
-                                    Serializador.RelatorioDeItemDoMenu(idioma, cardapio);
+                                    SerializadorDeRelatorio.RelatorioDeItemDoMenu(idioma, cardapio);
                                     PrinterRelatorio.RelatorioDeItemDoMenu(idioma, cardapio);                                    
                                 }
                             }

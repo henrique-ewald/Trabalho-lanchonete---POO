@@ -1,6 +1,6 @@
 using System;
 
-namespace Lanchonete;
+namespace Domain;
 
 public class ItemMenu
 {

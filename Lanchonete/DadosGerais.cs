@@ -9,7 +9,7 @@ namespace Lanchonete;
 public class DadosGerais
 {
     public MockDeDados Mock { get; set; }
-    public Cliente[] clientes {get;set;}
+    public Cliente[] Clientes {get;set;}
     public Cardapio Cardapio {get;set;} 
     public GerenciadorCardapio CardapioADM {get;set;} 
     public Administrador Administrador {get;set;}
@@ -19,9 +19,9 @@ public class DadosGerais
 
     public DadosGerais()
         {
-            
+            //
         }
-    public DadosGerais(MockDeDados mock,Cardapio cardapio, GerenciadorCardapio cardapioADM, Administrador administrador, GerenciadorPedidos gerenciador, PrintaRelatorios printerRelatorio, SerializadorDeRelatorio serializadorRelatorio)
+    public DadosGerais(MockDeDados mock,Cardapio cardapio, GerenciadorCardapio cardapioADM, Administrador administrador, GerenciadorPedidos gerenciador, PrintaRelatorios printerRelatorio, SerializadorDeRelatorio serializadorRelatorio, Cliente[] clientes)
     {
         Mock = mock;
         Cardapio = cardapio;
@@ -30,6 +30,7 @@ public class DadosGerais
         Gerenciador = gerenciador;
         PrinterRelatorio = printerRelatorio;
         SerializadorRelatorio = serializadorRelatorio;
+        Clientes = clientes;
     }
     
 }

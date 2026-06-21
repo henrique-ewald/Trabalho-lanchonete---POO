@@ -1,6 +1,5 @@
 using System;
 using Domain;
-using Projeto.CardapioDeItens;
 
 namespace Lanchonete;
 
@@ -18,11 +17,11 @@ public class UsuarioInput
         };
     }
 
-    public Funcionario CriarFuncionario(GerenciadorCardapio cardapio)
+    public Funcionario CriarFuncionario()
     {
         Console.WriteLine("Cadastro de funcionario. Preencha as informacoes:\n");
 
-        Funcionario funcionario = new Funcionario(cardapio)
+        Funcionario funcionario = new Funcionario()
         {
             Nome = LerTexto("Nome:"),
             Email = LerTexto("Email:"),
@@ -32,11 +31,11 @@ public class UsuarioInput
         return funcionario;
     }
 
-    public Administrador CriarAdministrador(GerenciadorCardapio cardapio)
+    public Administrador CriarAdministrador()
     {
         Console.WriteLine("Cadastro de administrador. Preencha as informacoes:\n");
 
-        Administrador administrador = new Administrador(cardapio)
+        Administrador administrador = new Administrador()
         {
             Nome = LerTexto("Nome:"),
             Email = LerTexto("Email:"),

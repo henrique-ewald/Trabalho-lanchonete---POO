@@ -2,13 +2,14 @@ using System;
 using Domain;
 using Projeto.Pedidos;
 using Projeto.CardapioDeItens;
+using Projeto.Relatorios;
 
 
 namespace Lanchonete;
 
 public class MockDeDados
 {
-    public (Cardapio cardapio, GerenciadorCardapio CardapioADM) CriarCardapioPadrao()
+    public GerenciadorCardapio CriarCardapioPadrao()
     {
         Categoria entradas = new Categoria
         {
@@ -166,8 +167,7 @@ public class MockDeDados
             EstaDisponivel = true,
             Categoria = sobremesas
         });
-        GerenciadorCardapio cardapioADM = cardapio;
-        return (cardapio, cardapioADM);
+        return cardapio;
     }
 
     public Cliente[] CriarClientesPadrao()
@@ -212,9 +212,9 @@ public class MockDeDados
         return clientes;
     }
 
-    public Administrador CriarAdministradorPadrao(GerenciadorCardapio cardapio)
+    public Administrador CriarAdministradorPadrao()
     {
-        return new Administrador(cardapio)
+        return new Administrador()
         {
             Nome = "Marcos Oliveira",
             Email = "marcos.oliveira@email.com",
@@ -243,21 +243,22 @@ public class MockDeDados
 
     public DadosGerais CriarCenarioCompleto()
     {
-        var cardapioGenerico = CriarCardapioPadrao();
+        GerenciadorCardapio cardapio = CriarCardapioPadrao();
         Cliente[] clientes = CriarClientesPadrao();
-        Administrador administrador = CriarAdministradorPadrao(cardapioGenerico.CardapioADM);
+        Administrador administrador = CriarAdministradorPadrao();
         GerenciadorPedidos gerenciador = CriarGerenciadorPedidosPadrao();
 
-        gerenciador.CriarPedido(clientes[0], cardapioGenerico.cardapio, new int[] { 1, 2, 3 }, new int[] { 2, 1, 1 }, 2);
-        gerenciador.CriarPedido(clientes[1], cardapioGenerico.cardapio, new int[] { 1, 2, 3, 4 }, new int[] { 1, 2, 1, 1 }, 3);
-        gerenciador.CriarPedido(clientes[2], cardapioGenerico.cardapio, new int[] { 1, 2, 3, 4, 5, 6 }, new int[] { 1, 1, 1, 1, 1, 1 }, 1);
+        gerenciador.CriarPedido(clientes[0], cardapio, new int[] { 1, 2, 3 }, new int[] { 2, 1, 1 }, 2);
+        gerenciador.CriarPedido(clientes[1], cardapio, new int[] { 1, 2, 3, 4 }, new int[] { 1, 2, 1, 1 }, 3);
+        gerenciador.CriarPedido(clientes[2], cardapio, new int[] { 1, 2, 3, 4, 5, 6 }, new int[] { 1, 1, 1, 1, 1, 1 }, 1);
         var DadosGerais = new DadosGerais
         {
-            Cardapio = cardapioGenerico.cardapio,
-            CardapioADM = cardapioGenerico.CardapioADM,
+            Clientes = clientes,
+            Cardapio = cardapio,
             Gerenciador = gerenciador,
             Administrador = administrador,
-            
+            PrinterRelatorio = new PrintaRelatorios(gerenciador),
+            SerializadorRelatorio = new SerializadorDeRelatorio(gerenciador)
         };
         return DadosGerais;
     }

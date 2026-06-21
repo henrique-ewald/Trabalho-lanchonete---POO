@@ -11,29 +11,28 @@ public class UsuarioComPermissao : Usuario, IMenuGerenciavel
 {
     protected string Senha {get;set;}
     public string Cargo {get;set;}
-    protected GerenciadorCardapio cardapio1 {get;set;}
-    private SerializerDeObjetos SerializadorOBJ {get;set;}
+    private SerializerDeObjetos SerializadorOBJ { get; set; }
     public void AdicionaItem(ItemMenu novo, DadosGerais dados)
     {
-        cardapio1.AdicionaItem(novo);
-        dados.CardapioADM.AdicionaItem(novo);
+        SerializadorOBJ = new SerializerDeObjetos();
+        dados.Cardapio.AdicionaItem(novo);
         SerializadorOBJ.SerializarObjeto(dados);
         Console.WriteLine("Item adicionado com sucesso!\n");
     }
     public void RemoverItem(ItemMenu removido, DadosGerais dados)
     {
-        cardapio1.RemoverItem(removido);
-        dados.CardapioADM.RemoverItem(removido);
+        SerializadorOBJ = new SerializerDeObjetos();
+        dados.Cardapio.RemoverItem(removido);
         SerializadorOBJ.SerializarObjeto(dados);
         Console.WriteLine("Item removido com sucesso!\n");
     }
 
     public void EditarItem(ItemMenu item, DadosGerais dados)
     {
+        SerializadorOBJ = new SerializerDeObjetos();
         PedidoInput inputItem = new PedidoInput();
         ItemMenu param = inputItem.EditarItemInputs();
-        cardapio1.EditarItem(item, param.EstaDisponivel, param.Preco);
-        dados.CardapioADM.EditarItem(item, param.EstaDisponivel, param.Preco);
+        dados.Cardapio.EditarItem(item, param.EstaDisponivel, param.Preco);
         SerializadorOBJ.SerializarObjeto(dados);
         Console.WriteLine($"Item '{item.DescricaoBR}' editado\n");
     }

@@ -15,6 +15,7 @@ public class Program
     static void Main(string[] args)
     {
         DadosGerais MockOuArquivo;
+        SerializerDeObjetos serializerDeObjetos = new SerializerDeObjetos();
 
         if (File.Exists("DadosSalvos.json")) 
         {
@@ -31,7 +32,8 @@ public class Program
                     var options = new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true,
-                        IncludeFields = true
+                        IncludeFields = true,
+                        WriteIndented = true
                     };
 
                     MockOuArquivo = JsonSerializer.Deserialize<DadosGerais>(json, options);
@@ -45,6 +47,8 @@ public class Program
                 {
                     MockDeDados mock = new MockDeDados();
                     MockOuArquivo = mock.CriarCenarioCompleto();
+                    serializerDeObjetos.SerializerInicial();
+                    Console.WriteLine("não foi possivel abrir o .json, executando programa com mock padrão.");
                 }
             }
         }
@@ -55,11 +59,9 @@ public class Program
         }
         string opcaoInvalida = "Informe uma opcao valida.";
 
-        Cardapio cardapio = MockOuArquivo.Cardapio;
-        GerenciadorCardapio cardapioADM = MockOuArquivo.CardapioADM;
-        Administrador administrador = MockOuArquivo.Administrador;
+        GerenciadorCardapio cardapio = MockOuArquivo.Cardapio;
         GerenciadorPedidos gerenciador = MockOuArquivo.Gerenciador;
-        SerializerDeObjetos serializerDeObjetos = new SerializerDeObjetos();
+        
         PrintaRelatorios PrinterRelatorio = new PrintaRelatorios(gerenciador);
         SerializadorDeRelatorio SerializadorDeRelatorio = new SerializadorDeRelatorio(gerenciador);
 
@@ -197,7 +199,7 @@ public class Program
                 else if (opcao == 2)
                 {
                     Console.WriteLine(idioma == Idioma.Portugues ? "Senha:" : "Password:");
-                    Funcionario funcionario = new Funcionario(cardapioADM) { Nome = "Funcionário" };
+                    Funcionario funcionario = new Funcionario() { Nome = "Funcionário" };
                     string senhaFuncionario = Console.ReadLine();
                     if (funcionario.ValidarSenha(senhaFuncionario))
                     {
@@ -244,14 +246,20 @@ public class Program
                                 else if (opcaoFunc == 3)
                                 {
                                     Console.WriteLine("Código do item:"); int cod = int.Parse(Console.ReadLine());
-                                    foreach (var item in cardapio.CardapioItens)
-                                        if (item.Codigo == cod) funcionario.EditarItem(item, MockOuArquivo);
+                                    var item = cardapio.CardapioItens.FirstOrDefault(item => item.Codigo == cod);
+                                    if (item != null)
+                                        funcionario.EditarItem(item, MockOuArquivo);
+                                    else
+                                        Console.WriteLine("Item não encontrado.");
                                 }
                                 else if (opcaoFunc == 4)
                                 {
                                     Console.WriteLine("Código do item:"); int cod = int.Parse(Console.ReadLine());
-                                    foreach (var item in cardapio.CardapioItens)
-                                        if (item.Codigo == cod) funcionario.RemoverItem(item, MockOuArquivo);
+                                    var item = cardapio.CardapioItens.FirstOrDefault(item => item.Codigo == cod);
+                                    if (item != null)
+                                        funcionario.RemoverItem(item, MockOuArquivo);
+                                    else
+                                        Console.WriteLine("Item não encontrado.");
                                 }
                             }
                             catch { Console.WriteLine(opcaoInvalida); }
@@ -264,7 +272,7 @@ public class Program
                 {
                     Console.WriteLine(idioma == Idioma.Portugues ? "Senha:" : "Password:");
                     string senhaAdmin = Console.ReadLine();
-                    if (administrador.ValidarSenha(senhaAdmin))
+                    if (new Administrador().ValidarSenha(senhaAdmin))
                     {
                         bool menuAdm = true;
                         while (menuAdm)

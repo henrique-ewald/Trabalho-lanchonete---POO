@@ -3,29 +3,28 @@ using Domain;
 using Projeto.CardapioDeItens;
 using Projeto.Relatorios;
 using Projeto.Pedidos;
+using System.Text.Json.Serialization;
 
 namespace Lanchonete;
 
 public class DadosGerais
 {
-    public MockDeDados Mock { get; set; }
     public Cliente[] Clientes {get;set;}
-    public Cardapio Cardapio {get;set;} 
-    public GerenciadorCardapio CardapioADM {get;set;} 
+    public GerenciadorCardapio Cardapio {get;set;} 
     public Administrador Administrador {get;set;}
     public GerenciadorPedidos Gerenciador {get;set;}
+    [JsonIgnore]
     public PrintaRelatorios PrinterRelatorio {get;set;}
+    [JsonIgnore]
     public SerializadorDeRelatorio SerializadorRelatorio {get;set;}
 
     public DadosGerais()
         {
             //
         }
-    public DadosGerais(MockDeDados mock,Cardapio cardapio, GerenciadorCardapio cardapioADM, Administrador administrador, GerenciadorPedidos gerenciador, PrintaRelatorios printerRelatorio, SerializadorDeRelatorio serializadorRelatorio, Cliente[] clientes)
+    public DadosGerais(GerenciadorCardapio cardapio, Administrador administrador, GerenciadorPedidos gerenciador, PrintaRelatorios printerRelatorio, SerializadorDeRelatorio serializadorRelatorio, Cliente[] clientes)
     {
-        Mock = mock;
         Cardapio = cardapio;
-        CardapioADM = cardapioADM;
         Administrador = administrador;
         Gerenciador = gerenciador;
         PrinterRelatorio = printerRelatorio;

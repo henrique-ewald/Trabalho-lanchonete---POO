@@ -15,11 +15,6 @@ public class Program
     {
         SerializerDeObjetos serializerDeObjetos = new SerializerDeObjetos();
 
-        // ADICIONAR O ESPANHOL
-        // ADICIONAR O ESPANHOL
-        // ADICIONAR O ESPANHOL
-        // ADICIONAR O ESPANHOL NA INTERFACE DE CRIAR ITENS
-
         Console.WriteLine("1. Portugues  |  2. English  |  3. Espanol");
         string escolhaIdioma = Console.ReadLine();
         GerenciadorDoIdioma gerenciadorIdioma = new GerenciadorDoIdioma(new IdiomaPortugues());

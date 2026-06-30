@@ -5,10 +5,14 @@ namespace Projeto.CardapioDeItens;
 
 public class GerenciadorCardapio : Cardapio
 {
+    private IIdioma Texto => Idioma ?? new IdiomaPortugues();
+
+    // Caso idioma seja null, ele seta em portugues como padrão
+
     public void AdicionaItem(ItemMenu novo)
     {
         CardapioItens.Add(novo);
-        Console.WriteLine($"Item de código {novo.Codigo} Adicionado!.");
+        Console.WriteLine(Texto.ItemCodigoAdicionado(novo.Codigo));
     }
 
     public ItemMenu EditarItem(ItemMenu item, bool estaDisponivel , decimal preco)
@@ -21,7 +25,6 @@ public class GerenciadorCardapio : Cardapio
     public void RemoverItem(ItemMenu removido)
     {
         CardapioItens.Remove(removido);
-        Console.WriteLine($"Item de código {removido.Codigo} removido.");
+        Console.WriteLine(Texto.ItemCodigoRemovido(removido.Codigo));
     }
-
 }

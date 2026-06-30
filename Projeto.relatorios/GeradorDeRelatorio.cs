@@ -1,28 +1,30 @@
 using System;
+using System.Globalization;
 using Domain;
 using Projeto.Pedidos;
 using Projeto.CardapioDeItens;
 
-namespace Lanchonete;
+namespace Projeto.Relatorios;
 
 public abstract class GeradorDeRelatorio
 {
-    protected GerenciadorPedidos gerenciador;
+    protected readonly GerenciadorPedidos gerenciador;
+    public IIdioma Idioma { get; set; }
+
+    protected GeradorDeRelatorio(GerenciadorPedidos gerenciador, IIdioma idioma)
+    {
+        this.gerenciador = gerenciador;
+        Idioma = idioma ?? new IdiomaPortugues();
+    }
 
     public abstract void RegistrarInformacao(string conteudo);
 
     public bool GerenciadorEhNull(GerenciadorPedidos gerenciador)
     {
-        if (gerenciador == null)
-        {
-            return true;
-        }
-        else
-        {
-            return false; 
-        }
+        return gerenciador == null;
     }
-    public void RelatorioPorPeriodo(Idioma idioma, DateTime inicio, DateTime fim)
+
+    public void RelatorioPorPeriodo(DateTime inicio, DateTime fim)
     {
         if (fim < inicio)
         {
@@ -43,13 +45,13 @@ public abstract class GeradorDeRelatorio
 
         if (!encontrou)
         {
-            RegistrarInformacao("Nenhum pedido encontrado nesse periodo.");
+            RegistrarInformacao(Idioma.NenhumPedidoEncontradoNessePeriodo);
         }
     }
 
-    public void RelatorioPorCliente(Idioma idioma)
+    public void RelatorioPorCliente()
     {
-        string busca = LerBusca("Nome ou email do cliente:");
+        string busca = LerBusca(Idioma.NomeOuEmailDoCliente);
         bool encontrou = false;
 
         foreach (Pedido pedido in gerenciador.TodosPedidos)
@@ -63,18 +65,18 @@ public abstract class GeradorDeRelatorio
 
         if (!encontrou)
         {
-            Console.WriteLine("Nenhum pedido encontrado para esse cliente.");
+            Console.WriteLine(Idioma.NenhumPedidoEncontradoParaEsseCliente);
         }
     }
 
-    public void RelatorioPorClienteEmPeriodo(Idioma idioma)
+    public void RelatorioPorClienteEmPeriodo()
     {
-        string busca = LerBusca("Nome ou email do cliente:");
+        string busca = LerBusca(Idioma.NomeOuEmailDoCliente);
 
-        Console.WriteLine("Data inicial (dd/MM/yyyy):");
-        DateTime inicio = DateTime.Parse(Console.ReadLine());
-        Console.WriteLine("Data final (dd/MM/yyyy):");
-        DateTime fim = DateTime.Parse(Console.ReadLine());
+        Console.WriteLine(Idioma.DataInicial);
+        DateTime inicio = LerData();
+        Console.WriteLine(Idioma.DataFinal);
+        DateTime fim = LerData();
 
         if (fim < inicio)
         {
@@ -95,13 +97,13 @@ public abstract class GeradorDeRelatorio
 
         if (!encontrou)
         {
-            Console.WriteLine("Nenhum pedido encontrado para esse cliente nesse periodo.");
+            Console.WriteLine(Idioma.NenhumPedidoEncontradoParaEsseClienteNessePeriodo);
         }
     }
 
-    public void RelatorioDeItemDoMenu(Idioma idioma, Cardapio cardapio)
+    public void RelatorioDeItemDoMenu(Cardapio cardapio)
     {
-        Console.WriteLine("Codigo do item:");
+        Console.WriteLine(Idioma.DigiteCodigoItem);
         int codigo = int.Parse(Console.ReadLine());
 
         ItemMenu itemProcurado = null;
@@ -115,11 +117,11 @@ public abstract class GeradorDeRelatorio
         }
         if (itemProcurado == null)
         {
-            Console.WriteLine("Item nao encontrado.");
+            Console.WriteLine(Idioma.ItemNaoEncontradoNoMenu);
             return;
         }
         bool encontrou = false;
-        RegistrarInformacao($"\nConsumo do item: {itemProcurado.DescricaoBR}");
+        RegistrarInformacao(Idioma.ConsumoDoItem(Idioma.NomeDoItem(itemProcurado.DescricaoBR, itemProcurado.DescricaoEN, itemProcurado.DescricaoES)));
         foreach (Pedido pedido in gerenciador.TodosPedidos)
         {
             if (PedidoContemItem(pedido, codigo))
@@ -129,13 +131,13 @@ public abstract class GeradorDeRelatorio
                 {
                     nomeCliente = pedido.Consumidor.Nome;
                 }
-                RegistrarInformacao($"Pedido #{pedido.id} | {nomeCliente} | {pedido.CriadoEm:dd/MM/yyyy HH:mm}");
+                RegistrarInformacao(Idioma.ResumoPedidoPorItem(pedido.id, nomeCliente, pedido.CriadoEm));
                 encontrou = true;
             }
         }
         if (!encontrou)
         {
-            RegistrarInformacao("Esse item ainda nao apareceu em nenhum pedido.");
+            RegistrarInformacao(Idioma.ItemNaoApareceuEmNenhumPedido);
         }
     }
 
@@ -152,6 +154,23 @@ public abstract class GeradorDeRelatorio
         return texto;
     }
 
+    private DateTime LerData()
+    {
+        while (true)
+        {
+            string texto = Console.ReadLine();
+
+            try
+            {
+                return DateTime.ParseExact(texto, Idioma.FormatoData, CultureInfo.InvariantCulture);
+            }
+            catch
+            {
+                Console.WriteLine(Idioma.OpcaoInvalida);
+            }
+        }
+    }
+
     private void MostrarPedido(Pedido pedido)
     {
         string nomeCliente = "Anonimo";
@@ -160,7 +179,7 @@ public abstract class GeradorDeRelatorio
             nomeCliente = pedido.Consumidor.Nome;
         }
 
-        RegistrarInformacao($"#{pedido.id} | {nomeCliente} | {pedido.CriadoEm:dd/MM/yyyy HH:mm} | {pedido.StatusAtual} | R${pedido.ValorTotal:F2}\nItens pedidos: {PrintaItensPedidos(pedido)}");
+        RegistrarInformacao(Idioma.ResumoPedido(pedido.id, nomeCliente, pedido.CriadoEm, pedido.StatusAtual, pedido.ValorTotal, PrintaItensPedidos(pedido)));
     }
 
     private string PrintaItensPedidos(Pedido pedido)
@@ -168,7 +187,7 @@ public abstract class GeradorDeRelatorio
         string resultado = "";
         foreach (var item in pedido.ItensPedidos)
         {
-            resultado += $" | {item.Item.DescricaoBR} |";
+            resultado += $" | {Idioma.NomeDoItem(item.Item.DescricaoBR, item.Item.DescricaoEN, item.Item.DescricaoES)} |";
         }
         return resultado;
     }

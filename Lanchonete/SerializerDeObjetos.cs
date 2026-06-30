@@ -17,11 +17,11 @@ public class SerializerDeObjetos
         jsonString = JsonSerializer.Serialize(Dados);
         File.WriteAllText("DadosSalvos.json", jsonString);
     }
-    public void SerializerInicial()
+    public void SerializerInicial(IIdioma idioma)
     {
         MockDeDados mock = new MockDeDados();
         DadosGerais dados;
-        dados = mock.CriarCenarioCompleto();
+        dados = mock.CriarCenarioCompleto(idioma);
         jsonString = JsonSerializer.Serialize(dados);
         File.WriteAllText("DadosSalvos.json", jsonString);
     }

@@ -1,17 +1,23 @@
 using System;
+using System.Globalization;
 using Domain;
 
 namespace Projeto.Pedidos;
 
 public class PedidoInput
 {
-    private string mensagemInvalida = "Informe uma opcao valida.";
+    public IIdioma Idioma { get; set; }
+
+    public PedidoInput(IIdioma idioma)
+    {
+        Idioma = idioma ?? new IdiomaPortugues();
+    }
 
     public DadosPedido PedidoInputs()
     {
         DadosPedido dados = new DadosPedido();
-        Console.WriteLine("Criando pedido! Preencha as informacoes:\n");
-        Console.WriteLine("Quantos itens foram pedidos?\n");
+        Console.WriteLine(Idioma.CriandoPedidoIntro);
+        Console.WriteLine(Idioma.QuantosItensPedido);
         dados.Quant = LerInteiro();
 
         dados.CodigosItens = new int[dados.Quant];
@@ -19,14 +25,14 @@ public class PedidoInput
 
         for (int i = 0; i < dados.Quant; i++)
         {
-            Console.WriteLine($"Digite o codigo do {i}° item:\n");
+            Console.WriteLine(Idioma.DigiteCodigoDoItem(i));
             dados.CodigosItens[i] = LerInteiro();
 
-            Console.WriteLine($"Quantas unidades do {i}° item foram pedidas?:\n");
+            Console.WriteLine(Idioma.DigiteQuantidadeDoItem(i));
             dados.QuantItens[i] = LerInteiro();
         }
 
-        Console.WriteLine("Em quantas pessoas vai ser dividida a conta?:\n");
+        Console.WriteLine(Idioma.EmQuantasPessoasVaiSerDivididaConta);
         dados.PessoasPDividir = LerInteiro();
         return dados;
     }
@@ -35,10 +41,10 @@ public class PedidoInput
     {
         ItemMenu item = new ItemMenu();
 
-        Console.WriteLine("Qual o novo preco do item?\n");
+        Console.WriteLine(Idioma.NovoPrecoItem);
         item.Preco = LerDecimal();
 
-        Console.WriteLine("O item esta disponivel?: (1 para SIM / 2 para NAO)\n");
+        Console.WriteLine(Idioma.ItemDisponivelPergunta);
         int opcao = LerInteiro();
 
         if (opcao == 1)
@@ -51,7 +57,7 @@ public class PedidoInput
         }
         else
         {
-            Console.WriteLine(mensagemInvalida);
+            Console.WriteLine(Idioma.OpcaoInvalida);
         }
 
         return item;
@@ -64,14 +70,14 @@ public class PedidoInput
         DateTime fim = dados.fim;
         int opcao = 0;
 
-        Console.WriteLine("Qual tipo de relatorio voce quer gerar?\n");
+        Console.WriteLine(Idioma.QualTipoRelatorio);
         while (opcao != 99)
         {
-            Console.WriteLine("1- Relatorio por periodo:");
-            Console.WriteLine("2- Relatorio por cliente:");
-            Console.WriteLine("3- Relatorio por cliente em periodo:");
-            Console.WriteLine("4- Relatorio por item no menu:\n");
-            Console.WriteLine("99 para sair do menu:\n");
+            Console.WriteLine(Idioma.RelatorioPorPeriodoOpcao);
+            Console.WriteLine(Idioma.RelatorioPorClienteOpcao);
+            Console.WriteLine(Idioma.RelatorioPorClienteEmPeriodoOpcao);
+            Console.WriteLine(Idioma.RelatorioPorItemOpcao);
+            Console.WriteLine(Idioma.SairMenuRelatorio);
             opcao = LerInteiro();
 
             if (opcao == 1)
@@ -109,18 +115,18 @@ public class PedidoInput
 
     private int RecebeIDItem()
     {
-        Console.WriteLine("Digite o ID do item:");
+        Console.WriteLine(Idioma.DigiteIdItem);
         return LerInteiro();
     }
 
     private string RecebeIDCliente()
     {
-        Console.WriteLine("Digite o ID do cliente:");
+        Console.WriteLine(Idioma.DigiteIdCliente);
         string texto = Console.ReadLine();
 
         if (texto == null)
         {
-            Console.WriteLine(mensagemInvalida);
+            Console.WriteLine(Idioma.OpcaoInvalida);
             return "";
         }
 
@@ -129,9 +135,9 @@ public class PedidoInput
 
     private void RecebePeriodo(ref DateTime inicio, ref DateTime fim)
     {
-        Console.WriteLine("Insira a data de inicio do periodo:");
+        Console.WriteLine(Idioma.DataInicial);
         inicio = LerData();
-        Console.WriteLine("Insira a data de fim do periodo:");
+        Console.WriteLine(Idioma.DataFinal);
         fim = LerData();
     }
 
@@ -145,7 +151,7 @@ public class PedidoInput
             }
             catch
             {
-                Console.WriteLine(mensagemInvalida);
+                Console.WriteLine(Idioma.OpcaoInvalida);
             }
         }
     }
@@ -160,7 +166,7 @@ public class PedidoInput
             }
             catch
             {
-                Console.WriteLine(mensagemInvalida);
+                Console.WriteLine(Idioma.OpcaoInvalida);
             }
         }
     }
@@ -169,13 +175,15 @@ public class PedidoInput
     {
         while (true)
         {
+            string texto = Console.ReadLine();
+
             try
             {
-                return DateTime.Parse(Console.ReadLine());
+                return DateTime.ParseExact(texto, Idioma.FormatoData, CultureInfo.InvariantCulture);
             }
             catch
             {
-                Console.WriteLine(mensagemInvalida);
+                Console.WriteLine(Idioma.OpcaoInvalida);
             }
         }
     }

@@ -1,5 +1,6 @@
 using System;
 using Domain;
+using System.Text.Json.Serialization;
 
 namespace Projeto.CardapioDeItens;
 
@@ -10,6 +11,8 @@ public class Cardapio
     public Categoria Bebidas {get;set;}
     public Categoria Pratos {get;set;}
     public Categoria Sobremesas {get;set;}
+    [JsonIgnore]
+    public IIdioma Idioma { get; set; }
 
 
 }

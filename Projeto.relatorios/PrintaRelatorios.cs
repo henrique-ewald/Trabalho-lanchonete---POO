@@ -1,18 +1,17 @@
 using System;
-using Lanchonete;
+using Domain;
 using Projeto.Pedidos;
 
 namespace Projeto.Relatorios;
 
 public class PrintaRelatorios : GeradorDeRelatorio
 {
-    public PrintaRelatorios(GerenciadorPedidos gerenciador)
+    public PrintaRelatorios(GerenciadorPedidos gerenciador, IIdioma idioma) : base(gerenciador, idioma)
     {
-        this.gerenciador = gerenciador;
     }
+
     public override void RegistrarInformacao(string conteudo)
     {
         Console.WriteLine(conteudo);
     }
-
 }

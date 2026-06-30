@@ -1,14 +1,15 @@
 using System;
+using Domain;
 using Projeto.Pedidos;
 
-namespace Lanchonete;
+namespace Projeto.Relatorios;
 
 public class SerializadorDeRelatorio : GeradorDeRelatorio
 {
-    public SerializadorDeRelatorio(GerenciadorPedidos gerenciador)
+    public SerializadorDeRelatorio(GerenciadorPedidos gerenciador, IIdioma idioma) : base(gerenciador, idioma)
     {
-        this.gerenciador = gerenciador;
     }
+
     public override void RegistrarInformacao(string conteudo)
     {
         File.AppendAllText("arquivo.txt", $"{conteudo}\n");

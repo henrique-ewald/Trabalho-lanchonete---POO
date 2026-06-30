@@ -1,48 +1,106 @@
 using System;
+using System.Globalization;
 using Domain;
 
 namespace Lanchonete;
 
 public class UsuarioInput
 {
+    private readonly IIdioma Idioma;
+
+    public UsuarioInput(IIdioma idioma)
+    {
+        Idioma = idioma;
+    }
+
     public Cliente CriarCliente()
     {
-        Console.WriteLine("Cadastro de cliente. Preencha as informacoes:\n");
+        Console.WriteLine(Idioma.CadastroClienteIntro);
 
         return new Cliente
         {
-            Nome = LerTexto("Nome:"),
-            Email = LerTexto("Email:"),
+            Nome = LerTexto(Idioma.CampoNome),
+            Email = LerTexto(Idioma.CampoEmail),
             AcessoDoUsuario = Acesso.Cliente
         };
     }
 
     public Funcionario CriarFuncionario()
     {
-        Console.WriteLine("Cadastro de funcionario. Preencha as informacoes:\n");
+        Console.WriteLine(Idioma.CadastroFuncionarioIntro);
 
-        Funcionario funcionario = new Funcionario()
+        Funcionario funcionario = new Funcionario
         {
-            Nome = LerTexto("Nome:"),
-            Email = LerTexto("Email:"),
-            Cargo = LerTexto("Cargo:")
+            Nome = LerTexto(Idioma.CampoNome),
+            Email = LerTexto(Idioma.CampoEmail),
+            Cargo = LerTexto(Idioma.CampoCargo)
         };
 
+        funcionario.Idioma = Idioma;
         return funcionario;
     }
 
     public Administrador CriarAdministrador()
     {
-        Console.WriteLine("Cadastro de administrador. Preencha as informacoes:\n");
+        Console.WriteLine(Idioma.CadastroAdministradorIntro);
 
-        Administrador administrador = new Administrador()
+        Administrador administrador = new Administrador
         {
-            Nome = LerTexto("Nome:"),
-            Email = LerTexto("Email:"),
-            Cargo = LerTexto("Cargo:")
+            Nome = LerTexto(Idioma.CampoNome),
+            Email = LerTexto(Idioma.CampoEmail),
+            Cargo = LerTexto(Idioma.CampoCargo)
         };
 
+        administrador.Idioma = Idioma;
         return administrador;
+    }
+
+    public int LerInteiro(string mensagem)
+    {
+        while (true)
+        {
+            Console.WriteLine(mensagem);
+            string? entrada = Console.ReadLine();
+
+            if (int.TryParse(entrada, out int valor))
+            {
+                return valor;
+            }
+
+            Console.WriteLine(Idioma.OpcaoInvalida);
+        }
+    }
+
+    public decimal LerDecimal(string mensagem)
+    {
+        while (true)
+        {
+            Console.WriteLine(mensagem);
+            string? entrada = Console.ReadLine();
+
+            if (decimal.TryParse(entrada, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal valor))
+            {
+                return valor;
+            }
+
+            Console.WriteLine(Idioma.OpcaoInvalida);
+        }
+    }
+
+    public DateTime LerData(string mensagem)
+    {
+        while (true)
+        {
+            Console.WriteLine(mensagem);
+            string? entrada = Console.ReadLine();
+
+            if (DateTime.TryParseExact(entrada, Idioma.FormatoData, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime valor))
+            {
+                return valor;
+            }
+
+            Console.WriteLine(Idioma.OpcaoInvalida);
+        }
     }
 
     public string LerTexto(string mensagem)
@@ -72,6 +130,4 @@ public class UsuarioInput
 
         return texto;
     }
-
-
 }

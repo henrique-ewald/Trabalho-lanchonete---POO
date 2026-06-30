@@ -1,12 +1,11 @@
-﻿using System;
+using System;
+using System.Globalization;
 using Domain;
 using Lanchonete;
+using Projeto.CardapioDeItens;
 using Projeto.Pedidos;
 using Projeto.Relatorios;
-using Projeto.CardapioDeItens;
 using System.Text.Json;
-using System.Runtime.InteropServices;
-
 
 namespace Program;
 
@@ -14,16 +13,33 @@ public class Program
 {
     static void Main(string[] args)
     {
-        DadosGerais MockOuArquivo;
         SerializerDeObjetos serializerDeObjetos = new SerializerDeObjetos();
 
-        if (File.Exists("DadosSalvos.json")) 
+        // ADICIONAR O ESPANHOL
+        // ADICIONAR O ESPANHOL
+        // ADICIONAR O ESPANHOL
+        // ADICIONAR O ESPANHOL NA INTERFACE DE CRIAR ITENS
+
+        Console.WriteLine("1. Portugues  |  2. English  |  3. Espanol");
+        string escolhaIdioma = Console.ReadLine();
+        GerenciadorDoIdioma gerenciadorIdioma = new GerenciadorDoIdioma(new IdiomaPortugues());
+        IIdioma? idiomaEscolhido = gerenciadorIdioma.SelecionarIdiomaPeloNumero(escolhaIdioma);
+
+        if (idiomaEscolhido != null)
+        {
+            gerenciadorIdioma.AplicarIdioma(idiomaEscolhido);
+        }
+
+        IIdioma idioma = gerenciadorIdioma.IdiomaAtual;
+
+        DadosGerais MockOuArquivo;
+        if (File.Exists("DadosSalvos.json"))
         {
             var json = File.ReadAllText("DadosSalvos.json");
             if (string.IsNullOrWhiteSpace(json))
             {
                 MockDeDados mock = new MockDeDados();
-                MockOuArquivo = mock.CriarCenarioCompleto();
+                MockOuArquivo = mock.CriarCenarioCompleto(idioma);
             }
             else
             {
@@ -40,53 +56,43 @@ public class Program
                     if (MockOuArquivo == null)
                     {
                         MockDeDados mock = new MockDeDados();
-                        MockOuArquivo = mock.CriarCenarioCompleto();
+                        MockOuArquivo = mock.CriarCenarioCompleto(idioma);
                     }
                 }
                 catch (Exception e) when (e is JsonException || e is InvalidOperationException)
                 {
                     MockDeDados mock = new MockDeDados();
-                    MockOuArquivo = mock.CriarCenarioCompleto();
-                    serializerDeObjetos.SerializerInicial();
-                    Console.WriteLine("não foi possivel abrir o .json, executando programa com mock padrão.");
+                    MockOuArquivo = mock.CriarCenarioCompleto(idioma);
+                    serializerDeObjetos.SerializerInicial(idioma);
+                    Console.WriteLine(idioma.NaoFoiPossivelAbrirJson);
                 }
             }
         }
         else
         {
             MockDeDados mock = new MockDeDados();
-            MockOuArquivo = mock.CriarCenarioCompleto(); 
+            MockOuArquivo = mock.CriarCenarioCompleto(idioma);
         }
-        string opcaoInvalida = "Informe uma opcao valida.";
 
         GerenciadorCardapio cardapio = MockOuArquivo.Cardapio;
         GerenciadorPedidos gerenciador = MockOuArquivo.Gerenciador;
-        
-        PrintaRelatorios PrinterRelatorio = new PrintaRelatorios(gerenciador);
-        SerializadorDeRelatorio SerializadorDeRelatorio = new SerializadorDeRelatorio(gerenciador);
+        Administrador administrador = MockOuArquivo.Administrador;
 
-        PedidoInput pedidoInput = new PedidoInput();
-        UsuarioInput usuarioInput = new UsuarioInput();
+        gerenciadorIdioma.VincularDados(MockOuArquivo);
 
-        Console.WriteLine("1. Português  |  2. English");
-        Idioma idioma = Idioma.Portugues;
-        string escolhaIdioma = Console.ReadLine();
-        try { if (escolhaIdioma != null && int.Parse(escolhaIdioma) == 2) idioma = Idioma.Ingles; }
-        catch { Console.WriteLine(opcaoInvalida); idioma = Idioma.Portugues; }
+        PedidoInput pedidoInput = gerenciadorIdioma.PedidoInput;
+        UsuarioInput usuarioInput = gerenciadorIdioma.UsuarioInput;
+        PrintaRelatorios PrinterRelatorio = gerenciadorIdioma.PrinterRelatorio;
+        SerializadorDeRelatorio SerializadorDeRelatorio = gerenciadorIdioma.SerializadorRelatorio;
+
 
         bool rodando = true;
         while (rodando)
         {
-            Console.WriteLine(idioma == Idioma.Portugues ? "\n1. Cliente\n2. Funcionário\n3. Administrador\n0. Sair" : "\n1. Customer\n2. Employee\n3. Administrator\n0. Exit");
-            string entradaPrincipal = Console.ReadLine();
-            if (entradaPrincipal == null)
-            {
-                break;
-            }
+            int opcao = usuarioInput.LerInteiro(idioma.MenuPrincipal);
 
             try
             {
-                int opcao = int.Parse(entradaPrincipal);
 
                 if (opcao == 0)
                 {
@@ -94,44 +100,20 @@ public class Program
                 }
                 else if (opcao == 1)
                 {
-                    Console.WriteLine(idioma == Idioma.Portugues ? "1. Continuar sem cadastro\n2. Informar meus dados"
-                                                                 : "1. Continue without registration\n2. Enter my details");
                     Cliente consumidor = null;
-                    string entradaCliente = Console.ReadLine();
-                    if (entradaCliente == null)
+                    int entradaCliente = usuarioInput.LerInteiro(idioma.MenuClienteSemCadastro);
+                    if (entradaCliente == 2)
                     {
-                        rodando = false;
-                        break;
-                    }
-
-                    try
-                    {
-                        if (int.Parse(entradaCliente) == 2)
-                            consumidor = usuarioInput.CriarCliente();
-                    }
-                    catch
-                    {
-                        Console.WriteLine(opcaoInvalida);
-                        continue;
+                        consumidor = usuarioInput.CriarCliente();
                     }
 
                     bool menuCliente = true;
                     while (menuCliente)
                     {
-                        Console.WriteLine(idioma == Idioma.Portugues
-                            ? "\n1. Ver cardápio\n2. Fazer pedido\n3. Adicionar item ao pedido\n4. Pagar pedido\n0. Voltar"
-                            : "\n1. View menu\n2. Place order\n3. Add item to order\n4. Pay order\n0. Back");
-                        string entradaClienteMenu = Console.ReadLine();
-                        if (entradaClienteMenu == null)
-                        {
-                            menuCliente = false;
-                            rodando = false;
-                            break;
-                        }
+                        int opcaoCliente = usuarioInput.LerInteiro(idioma.MenuCliente);
 
                         try
                         {
-                            int opcaoCliente = int.Parse(entradaClienteMenu);
 
                             if (opcaoCliente == 0)
                             {
@@ -143,8 +125,8 @@ public class Program
                                 {
                                     if (item.EstaDisponivel)
                                     {
-                                        string nome = idioma == Idioma.Portugues ? item.DescricaoBR : item.DescricaoEN;
-                                        string cat = idioma == Idioma.Portugues ? item.Categoria.NomeBR : item.Categoria.NomeEN;
+                                        string nome = idioma.NomeDoItem(item.DescricaoBR, item.DescricaoEN, item.DescricaoES);
+                                        string cat = idioma.NomeDaCategoria(item.Categoria.NomeBR, item.Categoria.NomeEN);
                                         Console.WriteLine($"[{item.Codigo}] {nome} - R${item.Preco:F2} ({cat})");
                                     }
                                 }
@@ -155,12 +137,11 @@ public class Program
                                 Pedido pedido = gerenciador.CriarPedido(consumidor, cardapio, dados.CodigosItens, dados.QuantItens, dados.PessoasPDividir);
                                 MockOuArquivo.Gerenciador.CriarPedido(consumidor, cardapio, dados.CodigosItens, dados.QuantItens, dados.PessoasPDividir);
                                 serializerDeObjetos.SerializarObjeto(MockOuArquivo);
-                                Console.WriteLine($"Pedido #{pedido.id} criado! Total: R${pedido.ValorTotal:F2}");
+                                Console.WriteLine(idioma.PedidoCriado(pedido.id, pedido.ValorTotal));
                             }
                             else if (opcaoCliente == 3)
                             {
-                                Console.WriteLine(idioma == Idioma.Portugues ? "Número do pedido:" : "Order number:");
-                                int idPedido = int.Parse(Console.ReadLine());
+                                int idPedido = usuarioInput.LerInteiro(idioma.NumeroPedido);
                                 Pedido encontrado = null;
                                 foreach (var p in gerenciador.TodosPedidos)
                                     if (p.id == idPedido) encontrado = p;
@@ -173,12 +154,13 @@ public class Program
                                     serializerDeObjetos.SerializarObjeto(MockOuArquivo);
                                 }
                                 else
-                                    Console.WriteLine(idioma == Idioma.Portugues ? "Pedido não encontrado ou já encerrado." : "Order not found or already closed.");
+                                {
+                                    Console.WriteLine(idioma.PedidoNaoEncontradoOuEncerrado);
+                                }
                             }
                             else if (opcaoCliente == 4)
                             {
-                                Console.WriteLine(idioma == Idioma.Portugues ? "Número do pedido:" : "Order number:");
-                                int idPedido = int.Parse(Console.ReadLine());
+                                int idPedido = usuarioInput.LerInteiro(idioma.NumeroPedido);
                                 Pedido encontrado = null;
                                 foreach (var p in gerenciador.TodosPedidos)
                                     if (p.id == idPedido) encontrado = p;
@@ -190,36 +172,30 @@ public class Program
                                     serializerDeObjetos.SerializarObjeto(MockOuArquivo);
                                 }
                                 else
-                                    Console.WriteLine(idioma == Idioma.Portugues ? "Pedido não encontrado." : "Order not found.");
+                                {
+                                    Console.WriteLine(idioma.PedidoNaoEncontrado);
+                                }
                             }
                         }
-                        catch { Console.WriteLine(opcaoInvalida); }
+                        catch
+                        {
+                            Console.WriteLine(idioma.OpcaoInvalida);
+                        }
                     }
                 }
                 else if (opcao == 2)
                 {
-                    Console.WriteLine(idioma == Idioma.Portugues ? "Senha:" : "Password:");
-                    Funcionario funcionario = new Funcionario() { Nome = "Funcionário" };
-                    string senhaFuncionario = Console.ReadLine();
+                    Funcionario funcionario = new Funcionario { Nome = "Funcionario", Idioma = idioma };
+                    string senhaFuncionario = usuarioInput.LerTexto(idioma.SenhaPrompt);
                     if (funcionario.ValidarSenha(senhaFuncionario))
                     {
                         bool menuFunc = true;
                         while (menuFunc)
                         {
-                            Console.WriteLine(idioma == Idioma.Portugues
-                                ? "\n1. Ver cardápio\n2. Adicionar item\n3. Editar item\n4. Remover item\n0. Voltar"
-                                : "\n1. View menu\n2. Add item\n3. Edit item\n4. Remove item\n0. Back");
-                            string entradaFuncionarioMenu = Console.ReadLine();
-                            if (entradaFuncionarioMenu == null)
-                            {
-                                menuFunc = false;
-                                rodando = false;
-                                break;
-                            }
+                            int opcaoFunc = usuarioInput.LerInteiro(idioma.MenuFuncionario);
 
                             try
                             {
-                                int opcaoFunc = int.Parse(entradaFuncionarioMenu);
 
                                 if (opcaoFunc == 0)
                                 {
@@ -229,68 +205,71 @@ public class Program
                                 {
                                     foreach (var item in cardapio.CardapioItens)
                                     {
-                                        string nome = idioma == Idioma.Portugues ? item.DescricaoBR : item.DescricaoEN;
-                                        string disp = item.EstaDisponivel ? "Disponivel" : "Indisponivel";
+                                        string nome = idioma.NomeDoItem(item.DescricaoBR, item.DescricaoEN, item.DescricaoES);
+                                        string disp = idioma.Disponibilidade(item.EstaDisponivel);
                                         Console.WriteLine($"[{item.Codigo}] {nome} - R${item.Preco:F2} ({disp})");
                                     }
                                 }
                                 else if (opcaoFunc == 2)
                                 {
-                                    Console.WriteLine("Código:"); int cod = int.Parse(Console.ReadLine());
-                                    Console.WriteLine("Descrição PT:"); string descBR = Console.ReadLine();
-                                    Console.WriteLine("Description EN:"); string descEN = Console.ReadLine();
-                                    Console.WriteLine("Preço:"); decimal preco = decimal.Parse(Console.ReadLine());
-                                    ItemMenu novo = new ItemMenu { Codigo = cod, DescricaoBR = descBR, DescricaoEN = descEN, Preco = preco, EstaDisponivel = true, Categoria = cardapio.Entradas };
+                                    int cod = usuarioInput.LerInteiro(idioma.DigiteCodigoItem);
+                                    string descBR = usuarioInput.LerTexto(idioma.DescricaoPT);
+                                    string descEN = usuarioInput.LerTexto(idioma.DescricaoEN);
+                                    string descES = usuarioInput.LerTexto(idioma.DescricaoES);
+                                    decimal preco = usuarioInput.LerDecimal(idioma.Preco);
+                                    ItemMenu novo = new ItemMenu { Codigo = cod, DescricaoBR = descBR, DescricaoEN = descEN, DescricaoES = descES, Preco = preco, EstaDisponivel = true, Categoria = cardapio.Entradas };
                                     funcionario.AdicionaItem(novo, MockOuArquivo);
                                 }
                                 else if (opcaoFunc == 3)
                                 {
-                                    Console.WriteLine("Código do item:"); int cod = int.Parse(Console.ReadLine());
+                                    int cod = usuarioInput.LerInteiro(idioma.DigiteCodigoItem);
                                     var item = cardapio.CardapioItens.FirstOrDefault(item => item.Codigo == cod);
                                     if (item != null)
+                                    {
                                         funcionario.EditarItem(item, MockOuArquivo);
+                                    }
                                     else
-                                        Console.WriteLine("Item não encontrado.");
+                                    {
+                                        Console.WriteLine(idioma.ItemNaoEncontrado);
+                                    }
                                 }
                                 else if (opcaoFunc == 4)
                                 {
-                                    Console.WriteLine("Código do item:"); int cod = int.Parse(Console.ReadLine());
+                                    int cod = usuarioInput.LerInteiro(idioma.DigiteCodigoItem);
                                     var item = cardapio.CardapioItens.FirstOrDefault(item => item.Codigo == cod);
                                     if (item != null)
+                                    {
                                         funcionario.RemoverItem(item, MockOuArquivo);
+                                    }
                                     else
-                                        Console.WriteLine("Item não encontrado.");
+                                    {
+                                        Console.WriteLine(idioma.ItemNaoEncontrado);
+                                    }
                                 }
                             }
-                            catch { Console.WriteLine(opcaoInvalida); }
+                            catch
+                            {
+                                Console.WriteLine(idioma.OpcaoInvalida);
+                            }
                         }
                     }
                     else
-                        Console.WriteLine(idioma == Idioma.Portugues ? "Senha incorreta." : "Incorrect password.");
+                    {
+                        Console.WriteLine(idioma.SenhaIncorreta);
+                    }
                 }
                 else if (opcao == 3)
                 {
-                    Console.WriteLine(idioma == Idioma.Portugues ? "Senha:" : "Password:");
-                    string senhaAdmin = Console.ReadLine();
-                    if (new Administrador().ValidarSenha(senhaAdmin))
+                    string senhaAdmin = usuarioInput.LerTexto(idioma.SenhaPrompt);
+                    if (administrador.ValidarSenha(senhaAdmin))
                     {
                         bool menuAdm = true;
                         while (menuAdm)
                         {
-                            Console.WriteLine(idioma == Idioma.Portugues
-                                ? "\n1. Ver pedidos\n2. Relatório por período\n3. Relatório por cliente\n4. Relatório por cliente em período\n5. Relatório por item\n0. Voltar"
-                                : "\n1. View orders\n2. Report by period\n3. Report by customer\n4. Report by customer in period\n5. Report by item\n0. Back");
-                            string entradaAdminMenu = Console.ReadLine();
-                            if (entradaAdminMenu == null)
-                            {
-                                menuAdm = false;
-                                rodando = false;
-                                break;
-                            }
+                            int opcaoAdm = usuarioInput.LerInteiro(idioma.MenuAdministrador);
 
                             try
                             {
-                                int opcaoAdm = int.Parse(entradaAdminMenu);
 
                                 if (opcaoAdm == 0)
                                 {
@@ -301,43 +280,57 @@ public class Program
                                     foreach (var p in gerenciador.TodosPedidos)
                                     {
                                         string nomeCliente = p.Consumidor != null ? p.Consumidor.Nome : "Anonimo";
-                                        Console.WriteLine($"#{p.id} | {nomeCliente} | {p.CriadoEm:dd/MM/yyyy HH:mm} | {p.StatusAtual} | R${p.ValorTotal:F2}");
+                                        Console.WriteLine($"#{p.id} | {nomeCliente} | {p.CriadoEm.ToString(idioma.FormatoDataHora)} | {p.StatusAtual} | R${p.ValorTotal:F2}");
                                     }
                                 }
                                 else if (opcaoAdm == 2)
                                 {
-                                    Console.WriteLine("Data inicial (dd/MM/yyyy):");
-                                    DateTime inicio = DateTime.Parse(Console.ReadLine());
-                                    Console.WriteLine("Data final (dd/MM/yyyy):");
-                                    DateTime fim = DateTime.Parse(Console.ReadLine());
-                                    SerializadorDeRelatorio.RelatorioPorPeriodo(idioma, inicio, fim);
-                                    PrinterRelatorio.RelatorioPorPeriodo(idioma, inicio, fim);   
+                                    DateTime inicio = usuarioInput.LerData(idioma.DataInicial);
+                                    DateTime fim = usuarioInput.LerData(idioma.DataFinal);
+                                    SerializadorDeRelatorio.RelatorioPorPeriodo(inicio, fim);
+                                    PrinterRelatorio.RelatorioPorPeriodo(inicio, fim);
                                 }
                                 else if (opcaoAdm == 3)
                                 {
-                                    SerializadorDeRelatorio.RelatorioPorCliente(idioma);
-                                    PrinterRelatorio.RelatorioPorCliente(idioma);
+                                    SerializadorDeRelatorio.RelatorioPorCliente();
+                                    PrinterRelatorio.RelatorioPorCliente();
                                 }
                                 else if (opcaoAdm == 4)
                                 {
-                                    SerializadorDeRelatorio.RelatorioPorClienteEmPeriodo(idioma);
-                                    PrinterRelatorio.RelatorioPorClienteEmPeriodo(idioma);
-                                    
+                                    SerializadorDeRelatorio.RelatorioPorClienteEmPeriodo();
+                                    PrinterRelatorio.RelatorioPorClienteEmPeriodo();
                                 }
                                 else if (opcaoAdm == 5)
                                 {
-                                    SerializadorDeRelatorio.RelatorioDeItemDoMenu(idioma, cardapio);
-                                    PrinterRelatorio.RelatorioDeItemDoMenu(idioma, cardapio);                                    
+                                    SerializadorDeRelatorio.RelatorioDeItemDoMenu(cardapio);
+                                    PrinterRelatorio.RelatorioDeItemDoMenu(cardapio);
                                 }
                             }
-                            catch { Console.WriteLine(opcaoInvalida); }
+                            catch
+                            {
+                                Console.WriteLine(idioma.OpcaoInvalida);
+                            }
                         }
                     }
                     else
-                        Console.WriteLine(idioma == Idioma.Portugues ? "Senha incorreta." : "Incorrect password.");
+                    {
+                        Console.WriteLine(idioma.SenhaIncorreta);
+                    }
+                }
+                else if (opcao == 4)
+                {
+                    gerenciadorIdioma.AlterarIdiomaEmExecucao();
+                    idioma = gerenciadorIdioma.IdiomaAtual;
+                    pedidoInput = gerenciadorIdioma.PedidoInput;
+                    usuarioInput = gerenciadorIdioma.UsuarioInput;
+                    PrinterRelatorio = gerenciadorIdioma.PrinterRelatorio;
+                    SerializadorDeRelatorio = gerenciadorIdioma.SerializadorRelatorio;
                 }
             }
-            catch { Console.WriteLine(opcaoInvalida); }
+            catch
+            {
+                Console.WriteLine(idioma.OpcaoInvalida);
+            }
         }
     }
 }

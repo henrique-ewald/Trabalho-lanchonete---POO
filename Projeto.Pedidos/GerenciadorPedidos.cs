@@ -51,18 +51,20 @@ public class GerenciadorPedidos
         ItemPedido[] itens = new ItemPedido[quant];
         for(int i=0; i < quant; i++)
         {
-            ItemMenu itemCardapio = BuscarItem(cardapio, codigosItens[i]);
-            if (itemCardapio == null)
+            try
             {
-                Console.WriteLine(Texto.ItemNaoEncontradoNoPedido(codigosItens[i]));
+                ItemMenu itemCardapio = BuscarItem(cardapio, codigosItens[i]);
+                ItemPedido item = new ItemPedido();
+                item.Item = itemCardapio;
+                item.PrecoUnitario = itemCardapio.Preco;
+                item.Quantidade = quantItens[i];
+                itens[i] = item;
+            }
+            catch (ItemNaoEncontradoException ex)
+            {
+                Console.WriteLine(Texto.ItemNaoEncontradoNoPedido(ex.CodigoItem));
                 continue;
             }
-
-            ItemPedido item = new ItemPedido();
-            item.Item = itemCardapio;
-            item.PrecoUnitario = itemCardapio.Preco;
-            item.Quantidade = quantItens[i];
-            itens[i] = item;
         }
         return itens;
     }
@@ -77,7 +79,7 @@ public class GerenciadorPedidos
             }
         }
 
-        return null;
+        throw new ItemNaoEncontradoException(codigo);
     }
 
     private TipoGenerico[] AdicionaAoVetorGenerico<TipoGenerico>(TipoGenerico Novo, TipoGenerico[] VetorGenerico)
@@ -100,21 +102,23 @@ public class GerenciadorPedidos
     {   
         for (int i = 0; i < CodigoItem.Length; i++)
         {
-            ItemMenu itemCardapio = BuscarItem(cardapio, CodigoItem[i]);
-            if (itemCardapio == null)
+            try
             {
-                Console.WriteLine(Texto.ItemNaoEncontradoNoPedido(CodigoItem[i]));
+                ItemMenu itemCardapio = BuscarItem(cardapio, CodigoItem[i]);
+                ItemPedido Item = new ItemPedido
+                {
+                    Quantidade = quantItens[i],
+                    PrecoUnitario = itemCardapio.Preco,
+                    Item = itemCardapio
+                };
+                pedido.ItensPedidos = AdicionaAoVetorGenerico(Item, pedido.ItensPedidos);
+                pedido.ValorTotal += itemCardapio.Preco * quantItens[i];
+            }
+            catch (ItemNaoEncontradoException ex)
+            {
+                Console.WriteLine(Texto.ItemNaoEncontradoNoPedido(ex.CodigoItem));
                 continue;
             }
-
-            ItemPedido Item = new ItemPedido
-            {
-                Quantidade = quantItens[i],
-                PrecoUnitario = itemCardapio.Preco,
-                Item = itemCardapio
-            };
-            pedido.ItensPedidos = AdicionaAoVetorGenerico(Item, pedido.ItensPedidos);
-            pedido.ValorTotal += itemCardapio.Preco * quantItens[i];
         }
         return pedido;
     }
@@ -133,7 +137,7 @@ public class GerenciadorPedidos
         }
         else if (pedido.StatusAtual == Status.Encerrado)
         {
-            Console.WriteLine(Texto.PedidoJaEncerrado);
+            throw new PedidoJaEncerradoException(pedido.id);
         }
         return pedido;
     }

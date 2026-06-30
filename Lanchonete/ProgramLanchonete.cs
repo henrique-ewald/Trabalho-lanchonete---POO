@@ -167,9 +167,16 @@ public class Program
 
                                 if (encontrado != null)
                                 {
-                                    gerenciador.AtualizarStatusPedido(encontrado);
-                                    MockOuArquivo.Gerenciador.AtualizarStatusPedido(encontrado);
-                                    serializerDeObjetos.SerializarObjeto(MockOuArquivo);
+                                    try
+                                    {
+                                        gerenciador.AtualizarStatusPedido(encontrado);
+                                        MockOuArquivo.Gerenciador.AtualizarStatusPedido(encontrado);
+                                        serializerDeObjetos.SerializarObjeto(MockOuArquivo);
+                                    }
+                                    catch (PedidoJaEncerradoException)
+                                    {
+                                        Console.WriteLine(idioma.PedidoJaEncerrado);
+                                    }
                                 }
                                 else
                                 {
